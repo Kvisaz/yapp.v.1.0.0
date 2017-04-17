@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Nano Translate</string>
+
+    <string name="start_screen_loading_message_content">Server Connecting...</string>
+    <string name="start_screen_internet_error_message_title">No Internet connection</string>
+    <string name="start_screen_internet_error_message_content">The history and bookmarks are available for viewing. To translate new phrases, you need to connect to the Internet.</string>
+    <string name="start_screen_internet_ok_button_label">Ok</string>
+</resources>

@@ -1,0 +1,72 @@
+package ru.kvisaz.yandextranslate.screens.start;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import ru.kvisaz.yandextranslate.R;
+import ru.kvisaz.yandextranslate.screens.tabcontainer.TabActivity;
+
+public class StartActivity extends MvpAppCompatActivity implements IStartView {
+    @InjectPresenter
+    StartPresenter presenter;
+
+    @BindView(R.id.messageTitleTextView)
+    TextView messageTitleTextView;
+
+    @BindView(R.id.messageContentTextView)
+    TextView messageContentTextView;
+
+    @BindView(R.id.okButton)
+    Button okButton;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_start);
+        presenter.onActivityCreate();
+    }
+
+    @Override
+    public void showOfflineScreen() {
+        messageTitleTextView.setVisibility(View.VISIBLE);
+        messageTitleTextView.setText(R.string.start_screen_internet_error_message_title);
+
+        messageContentTextView.setVisibility(View.VISIBLE);
+        messageContentTextView.setText(R.string.start_screen_internet_error_message_content);
+
+        okButton.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showErrorScreen(String title, String message) {
+        messageTitleTextView.setVisibility(View.VISIBLE);
+        messageTitleTextView.setText(title);
+
+        messageContentTextView.setVisibility(View.VISIBLE);
+        messageContentTextView.setText(message);
+
+        okButton.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void goToTabActivityScreen() {
+        Intent intent = new Intent(this, TabActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    @OnClick(R.id.okButton)
+    public void onOkButtonClick(){
+        presenter.onStartButtonClick();
+    }
+}
