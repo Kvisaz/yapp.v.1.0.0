@@ -7,7 +7,6 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import ru.kvisaz.yandextranslate.common.ConnectivityChecker;
 import ru.kvisaz.yandextranslate.common.LocaleChecker;
 
 @Module
@@ -27,7 +26,7 @@ public class AppModule {
 
     @Provides
     @Singleton
-    LocaleChecker providesLocaleChecker(Context context){
+    LocaleChecker providesLocaleChecker(Context context) {
         final LocaleChecker localeChecker = new LocaleChecker(context);
         return localeChecker;
     }

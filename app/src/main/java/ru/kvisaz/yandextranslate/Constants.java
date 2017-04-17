@@ -31,4 +31,7 @@ public class Constants {
     public static final char ALPHA_HALF_TRANSPARENT = 128;
 
     public static final long START_SCREEN_LOADING_MIN_TIME = 3;
+
+    public static final String DEFAULT_LANGUAGE_CODE = "en";
+    public static final String DEFAULT_LANGUAGE_DESCRIPTION = "English";
 }

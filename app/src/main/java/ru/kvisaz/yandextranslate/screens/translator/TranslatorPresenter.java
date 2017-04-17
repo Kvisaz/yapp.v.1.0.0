@@ -28,7 +28,7 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
     public TranslatorPresenter() {
         super();
-        ComponentProvider.getNetworkComponent().inject(this);
+        ComponentProvider.getDataComponent().inject(this);
     }
 
     @Override

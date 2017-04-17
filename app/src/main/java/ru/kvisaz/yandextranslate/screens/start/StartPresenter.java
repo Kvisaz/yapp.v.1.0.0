@@ -12,6 +12,7 @@ import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.common.ConnectivityChecker;
 import ru.kvisaz.yandextranslate.common.LocaleChecker;
 import ru.kvisaz.yandextranslate.data.ActiveSession;
+import ru.kvisaz.yandextranslate.data.UserSettings;
 import ru.kvisaz.yandextranslate.data.rest.YandexService;
 import ru.kvisaz.yandextranslate.data.rest.models.LanguagesResponse;
 import ru.kvisaz.yandextranslate.di.ComponentProvider;
@@ -28,9 +29,12 @@ public class StartPresenter extends MvpPresenter<IStartView> implements IStartPr
     @Inject
     LocaleChecker localeChecker;
 
-    public StartPresenter(){
+    @Inject
+    UserSettings userSettings;
+
+    public StartPresenter() {
         super();
-        ComponentProvider.getNetworkComponent().inject(this);
+        ComponentProvider.getDataComponent().inject(this);
     }
 
     @Override
@@ -56,11 +60,16 @@ public class StartPresenter extends MvpPresenter<IStartView> implements IStartPr
 
         String currentUserLanguageCode = localeChecker.getLanguageCode();
 
+        // todo delete after test
+        currentUserLanguageCode = "zasasas";
+
         // use timer observable for minimal start screen show time
         Observable<Long> timer = Observable.timer(Constants.START_SCREEN_LOADING_MIN_TIME, TimeUnit.SECONDS);
-        Observable<LanguagesResponse> fetchLanguages = mYandexService.fetchLanguages(currentUserLanguageCode);
+        Observable<LanguagesResponse> fetchLanguages = mYandexService
+                .fetchLanguages(currentUserLanguageCode)
+                .flatMap(this::checkLanguageResponse);
 
-        Observable.zip(fetchLanguages, timer, (user, timerValue) -> user)
+        Observable.zip(fetchLanguages, timer, (languagesResponse, timerValue) -> languagesResponse)
                 .subscribe(
                         languageData -> {
                             ActiveSession.saveLanguageData(languageData);
@@ -70,6 +79,14 @@ public class StartPresenter extends MvpPresenter<IStartView> implements IStartPr
                         throwable -> {
                             getViewState().showErrorScreen("Error", throwable.getMessage());
                         });
+    }
+
+    private Observable<LanguagesResponse> checkLanguageResponse(LanguagesResponse languagesResponse) {
+        if (languagesResponse.langs == null) {
+            return mYandexService.fetchLanguages(Constants.DEFAULT_LANGUAGE_CODE);
+        } else {
+            return Observable.just(languagesResponse);
+        }
     }
 
 }
