@@ -11,7 +11,7 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 import ru.kvisaz.yandextranslate.Constants;
-import ru.kvisaz.yandextranslate.data.rest.models.Languages;
+import ru.kvisaz.yandextranslate.data.rest.models.LanguagesResponse;
 import ru.kvisaz.yandextranslate.data.rest.models.LanguageDetectResponse;
 import ru.kvisaz.yandextranslate.data.rest.models.TranslateResponse;
 
@@ -19,7 +19,7 @@ public class YandexService {
 
     public interface IRest {
         @POST(Constants.API_LANGUAGES_DATA_PATH)
-        Observable<Languages> fetchLanguages(@Query(Constants.API_LANGUAGES_UI_PARAM) String ui);
+        Observable<LanguagesResponse> fetchLanguages(@Query(Constants.API_LANGUAGES_UI_PARAM) String ui);
 
         @POST(Constants.API_DETECT_PATH)
         Observable<LanguageDetectResponse> detectLanguage(@Query(Constants.API_DETECT_TEXT_PARAM) String text);
@@ -50,7 +50,7 @@ public class YandexService {
     // Methods
     // ===========================================================
 
-    public Observable<Languages> fetchLanguages(){
+    public Observable<LanguagesResponse> fetchLanguages(){
         return mApiRestService.fetchLanguages(Constants.API_LANGUAGES_UI_VALUE).compose(applySchedulers());
     }
 

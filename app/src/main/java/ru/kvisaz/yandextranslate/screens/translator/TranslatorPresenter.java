@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import ru.kvisaz.yandextranslate.common.LocaleChecker;
 import ru.kvisaz.yandextranslate.data.ActiveSession;
 import ru.kvisaz.yandextranslate.data.models.Language;
+import ru.kvisaz.yandextranslate.data.models.LanguagesInfo;
 import ru.kvisaz.yandextranslate.di.ComponentProvider;
 
 @InjectViewState
@@ -32,11 +33,12 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
     @Override
     public void onStart() {
-        Language[] languages = ActiveSession.getLanguageDescriptions();
-        getViewState().setSourceLanguages(languages);
+        LanguagesInfo languagesInfo = ActiveSession.getLanguages();
+        Language[] languagesArray = languagesInfo.getLanguages();
+        getViewState().setSourceLanguages(languagesArray);
 
         String languageCode = localeChecker.getLanguageCode();
-        Language currentUserLanguage = ActiveSession.getLanguageByCode(languageCode);
+        Language currentUserLanguage = ActiveSession.getLanguages().getLanguage(languageCode);
         if (currentUserLanguage != null) {
             getViewState().selectSourceLanguage(currentUserLanguage);
         }

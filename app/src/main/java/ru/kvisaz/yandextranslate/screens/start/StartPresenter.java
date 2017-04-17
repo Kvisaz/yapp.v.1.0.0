@@ -12,7 +12,7 @@ import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.common.ConnectivityChecker;
 import ru.kvisaz.yandextranslate.data.ActiveSession;
 import ru.kvisaz.yandextranslate.data.rest.YandexService;
-import ru.kvisaz.yandextranslate.data.rest.models.Languages;
+import ru.kvisaz.yandextranslate.data.rest.models.LanguagesResponse;
 import ru.kvisaz.yandextranslate.di.ComponentProvider;
 
 @InjectViewState
@@ -52,12 +52,12 @@ public class StartPresenter extends MvpPresenter<IStartView> implements IStartPr
 
         // use timer observable for minimal start screen show time
         Observable<Long> timer = Observable.timer(Constants.START_SCREEN_LOADING_MIN_TIME, TimeUnit.SECONDS);
-        Observable<Languages> fetchLanguages = mYandexService.fetchLanguages();
+        Observable<LanguagesResponse> fetchLanguages = mYandexService.fetchLanguages();
 
         Observable.zip(fetchLanguages, timer, (user, timerValue) -> user)
                 .subscribe(
                         languageData -> {
-                            ActiveSession.setLanguages(languageData);
+                            ActiveSession.saveLanguageData(languageData);
                             getViewState().goToTabActivityScreen();
                         },
 
