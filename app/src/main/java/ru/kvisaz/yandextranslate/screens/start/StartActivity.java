@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.hamza.slidingsquaresloaderview.SlidingSquareLoaderView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,22 +29,23 @@ public class StartActivity extends MvpAppCompatActivity implements IStartView {
     @BindView(R.id.okButton)
     Button okButton;
 
+    @BindView(R.id.slidingSquareLoaderView)
+    SlidingSquareLoaderView loaderView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
+
+        ButterKnife.bind(this);
+
         presenter.onActivityCreate();
     }
 
     @Override
     public void showOfflineScreen() {
-        messageTitleTextView.setVisibility(View.VISIBLE);
-        messageTitleTextView.setText(R.string.start_screen_internet_error_message_title);
-
-        messageContentTextView.setVisibility(View.VISIBLE);
-        messageContentTextView.setText(R.string.start_screen_internet_error_message_content);
-
-        okButton.setVisibility(View.VISIBLE);
+        showErrorScreen(getString(R.string.start_screen_internet_error_message_title),
+                getString(R.string.start_screen_internet_error_message_content));
     }
 
     @Override
@@ -53,6 +55,8 @@ public class StartActivity extends MvpAppCompatActivity implements IStartView {
 
         messageContentTextView.setVisibility(View.VISIBLE);
         messageContentTextView.setText(message);
+
+        loaderView.setVisibility(View.GONE);
 
         okButton.setVisibility(View.VISIBLE);
     }
@@ -66,7 +70,7 @@ public class StartActivity extends MvpAppCompatActivity implements IStartView {
     }
 
     @OnClick(R.id.okButton)
-    public void onOkButtonClick(){
+    public void onOkButtonClick() {
         presenter.onStartButtonClick();
     }
 }

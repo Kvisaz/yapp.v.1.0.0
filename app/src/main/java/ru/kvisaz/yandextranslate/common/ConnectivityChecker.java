@@ -12,9 +12,13 @@ public class ConnectivityChecker {
     }
 
     public boolean isOnline() {
+        boolean isConnected = false;
         ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-        boolean isConnected = networkInfo.isConnected();
+        if(networkInfo==null) {
+            return isConnected;
+        }
+        isConnected = networkInfo.isConnected();
         return isConnected;
     }
 }
