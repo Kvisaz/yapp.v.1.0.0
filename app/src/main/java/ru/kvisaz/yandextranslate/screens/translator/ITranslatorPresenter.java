@@ -3,6 +3,9 @@ package ru.kvisaz.yandextranslate.screens.translator;
 import ru.kvisaz.yandextranslate.data.models.Language;
 
 public interface ITranslatorPresenter {
+
+    void onStart();
+
     void onSourceSelect(Language sourceLanguage);
 
     void onDestinationSelect(Language destinationLanguage);

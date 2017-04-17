@@ -27,24 +27,23 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Spinner
-            android:id="@+id/spinner"
+            android:id="@+id/sourceLangSpinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="0dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="0dp"
-            android:textAlignment="textEnd"
-            android:gravity="end"
             android:background="@null"
+            android:gravity="end"
+            android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/button"
-            app:layout_constraintTop_toTopOf="parent"
-             />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Spinner
-            android:id="@+id/spinner2"
+            android:id="@+id/destLangSpinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="0dp"
@@ -55,8 +54,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/button"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-         />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 
