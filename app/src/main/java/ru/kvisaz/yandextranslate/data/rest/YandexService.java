@@ -50,8 +50,8 @@ public class YandexService {
     // Methods
     // ===========================================================
 
-    public Observable<LanguagesResponse> fetchLanguages(){
-        return mApiRestService.fetchLanguages(Constants.API_LANGUAGES_UI_VALUE).compose(applySchedulers());
+    public Observable<LanguagesResponse> fetchLanguages(String languageUiCode){
+        return mApiRestService.fetchLanguages(languageUiCode).compose(applySchedulers());
     }
 
     public Observable<LanguageDetectResponse> detectLanguage(String text){
