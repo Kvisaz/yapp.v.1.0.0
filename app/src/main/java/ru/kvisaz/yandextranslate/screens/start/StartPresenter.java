@@ -56,19 +56,28 @@ public class StartPresenter extends MvpPresenter<IStartView> implements IStartPr
         return mConnectivityChecker.isOnline();
     }
 
+    /*
+    *   1. Запрашиваем у сервера список поддерживаемых языков с кодом ui из пользовательских настроек
+    *   2. Если в настройках ничего нет, берем код ui из локали
+    *   3. Если текущая локаль уникальна или не подошла - повторяем запрос с дефолтным ui
+    * */
     private void fetchLanguagesData() {
 
-        String currentUserLanguageCode = localeChecker.getLanguageCode();
+        // 1 и 2
+        String currentUserLanguageCode = userSettings.getLanguageCode();
+        if (currentUserLanguageCode == null) {
+            currentUserLanguageCode = localeChecker.getLanguageCode();
+            userSettings.setLanguageCode(currentUserLanguageCode);
+        }
 
-        // todo delete after test
-        currentUserLanguageCode = "zasasas";
-
-        // use timer observable for minimal start screen show time
+        // задаем минимальное время для показа индикатора
         Observable<Long> timer = Observable.timer(Constants.START_SCREEN_LOADING_MIN_TIME, TimeUnit.SECONDS);
         Observable<LanguagesResponse> fetchLanguages = mYandexService
-                .fetchLanguages(currentUserLanguageCode)
-                .flatMap(this::checkLanguageResponse);
+                .fetchLanguages(currentUserLanguageCode) // первый запрос к серверу с кодом ui
+                .flatMap(this::checkLanguageResponse); //  если ui не подошел, делаем второй с дефолтным кодом
 
+        // группируем таймер и запрос к серверу - результат будет только когда отработают оба observable,
+        // то есть будет минимальное время показа стартового экрана
         Observable.zip(fetchLanguages, timer, (languagesResponse, timerValue) -> languagesResponse)
                 .subscribe(
                         languageData -> {
@@ -81,9 +90,14 @@ public class StartPresenter extends MvpPresenter<IStartView> implements IStartPr
                         });
     }
 
+    /*
+    *    Если параметр ui не подошел, то ставим дефолтный язык и повторяем запрос
+    *    для получения
+    * */
     private Observable<LanguagesResponse> checkLanguageResponse(LanguagesResponse languagesResponse) {
         if (languagesResponse.langs == null) {
-            return mYandexService.fetchLanguages(Constants.DEFAULT_LANGUAGE_CODE);
+            userSettings.setLanguageCode(Constants.DEFAULT_LANGUAGE_CODE);
+            return mYandexService.fetchLanguages(userSettings.getLanguageCode());
         } else {
             return Observable.just(languagesResponse);
         }

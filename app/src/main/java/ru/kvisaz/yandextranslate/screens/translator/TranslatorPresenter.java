@@ -42,6 +42,9 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
         if (currentUserLanguage != null) {
             getViewState().selectSourceLanguage(currentUserLanguage);
         }
+
+        Language[] destinationLanguageArray = languagesInfo.getDestinations(currentUserLanguage);
+        getViewState().setDestinationLanguages(destinationLanguageArray);
     }
 
     @TargetApi(Build.VERSION_CODES.N)

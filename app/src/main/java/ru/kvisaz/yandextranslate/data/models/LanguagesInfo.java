@@ -2,9 +2,11 @@ package ru.kvisaz.yandextranslate.data.models;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.util.Map;
 
+import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.data.rest.models.LanguagesResponse;
 
 public class LanguagesInfo {
@@ -12,6 +14,9 @@ public class LanguagesInfo {
 
     public LanguagesInfo(LanguagesResponse languagesResponse) {
         mLanguagesResponse = languagesResponse;
+
+        // todo delete
+        Log.d(Constants.LOG_TAG, "dirs.size = " + mLanguagesResponse.dirs.size() + " langs.size = " + mLanguagesResponse.langs.size());
     }
 
     @NonNull
@@ -34,5 +39,9 @@ public class LanguagesInfo {
         }
 
         return language;
+    }
+
+    public Language[] getDestinations(Language currentUserLanguage) {
+        return new Language[0];
     }
 }
