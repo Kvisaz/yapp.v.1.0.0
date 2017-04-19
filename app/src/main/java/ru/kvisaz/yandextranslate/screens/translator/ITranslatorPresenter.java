@@ -1,5 +1,7 @@
 package ru.kvisaz.yandextranslate.screens.translator;
 
+import android.text.Editable;
+
 import ru.kvisaz.yandextranslate.data.models.Language;
 
 public interface ITranslatorPresenter {
@@ -21,4 +23,6 @@ public interface ITranslatorPresenter {
     void onShareButtonClick();
 
     void onCopyButtonClick();
+
+    void onInputChanged(Editable editable);
 }

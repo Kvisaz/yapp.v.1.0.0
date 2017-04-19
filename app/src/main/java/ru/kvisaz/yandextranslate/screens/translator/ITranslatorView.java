@@ -1,5 +1,7 @@
 package ru.kvisaz.yandextranslate.screens.translator;
 
+import android.text.Spanned;
+
 import com.arellomobile.mvp.MvpView;
 
 import java.util.List;
@@ -18,4 +20,5 @@ public interface ITranslatorView extends MvpView {
 
     void showTranslatedText(String translated);
     void showOriginalText(String original);
+    void showDictionaryText(Spanned article);
 }

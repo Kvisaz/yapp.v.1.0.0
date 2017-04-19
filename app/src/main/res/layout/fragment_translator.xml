@@ -119,7 +119,7 @@
     </FrameLayout>
 
     <TextView
-        android:id="@+id/TranslatedTextView"
+        android:id="@+id/translatedTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
@@ -131,7 +131,7 @@
         tools:text="Hi" />
 
     <TextView
-        android:id="@+id/SourceTextView"
+        android:id="@+id/sourceTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
@@ -139,11 +139,11 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TranslatedTextView"
+        app:layout_constraintTop_toBottomOf="@+id/translatedTextView"
         tools:text="Привет" />
 
     <TextView
-        android:id="@+id/HtmlTranslatedTextView"
+        android:id="@+id/translatedHtmlTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
@@ -151,7 +151,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/SourceTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/sourceTextView" />
 
 
 

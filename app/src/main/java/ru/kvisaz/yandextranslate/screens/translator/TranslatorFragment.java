@@ -2,19 +2,20 @@ package ru.kvisaz.yandextranslate.screens.translator;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
-import java.util.List;
-import java.util.Map;
-
 import butterknife.BindView;
+import butterknife.OnClick;
 import butterknife.OnItemSelected;
+import butterknife.OnTextChanged;
 import ru.kvisaz.yandextranslate.R;
 import ru.kvisaz.yandextranslate.common.CommonTabFragment;
 import ru.kvisaz.yandextranslate.data.models.Language;
@@ -29,6 +30,15 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
 
     @BindView(R.id.destLangSpinner)
     Spinner destLangSpinner;
+
+    @BindView(R.id.sourceTextView)
+    TextView sourceTextView;
+
+    @BindView(R.id.translatedTextView)
+    TextView translatedTextView;
+
+    @BindView(R.id.translatedHtmlTextView)
+    TextView translatedHtmlTextView;
 
     private ArrayAdapter<Language> sourcesSpinnerAdapter;
     private ArrayAdapter<Language> destLanguagesAdapter;
@@ -69,24 +79,39 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
 
     @Override
     public void showTranslatedText(String translated) {
+        translatedTextView.setText(translated);
+    }
 
+    @Override
+    public void showDictionaryText(Spanned article) {
+        translatedHtmlTextView.setText(article);
     }
 
     @Override
     public void showOriginalText(String original) {
+        sourceTextView.setText(original);
+    }
 
+    @OnClick(R.id.switchDirectionsButton)
+    public void onSwitch() {
+        presenter.onSwitchLanguagesButtonClick();
+    }
+
+    @OnTextChanged(R.id.inputEditText)
+    public void onInputChange(Editable editable) {
+        presenter.onInputChanged(editable);
     }
 
     @OnItemSelected(R.id.sourceLangSpinner)
-    public void onSourceSelect(Spinner sourceLangSpinner, int position){
-        if(sourcesSpinnerAdapter==null) return;
-        Language source =  sourcesSpinnerAdapter.getItem(position);
+    public void onSourceSelect(Spinner sourceLangSpinner, int position) {
+        if (sourcesSpinnerAdapter == null) return;
+        Language source = sourcesSpinnerAdapter.getItem(position);
         presenter.onSourceSelect(source);
     }
 
     @OnItemSelected(R.id.destLangSpinner)
-    public void onDestinationsSelect(Spinner destLangSpinner, int position){
-        if(destLanguagesAdapter==null) return;
+    public void onDestinationsSelect(Spinner destLangSpinner, int position) {
+        if (destLanguagesAdapter == null) return;
         Language dest = destLanguagesAdapter.getItem(position);
         presenter.onDestinationSelect(dest);
     }

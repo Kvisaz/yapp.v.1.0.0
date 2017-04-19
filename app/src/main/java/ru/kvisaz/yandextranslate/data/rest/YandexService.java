@@ -17,6 +17,8 @@ import ru.kvisaz.yandextranslate.data.rest.models.TranslateResponse;
 
 public class YandexService {
 
+    private static final String DIRS_DELIMITER = Constants.DEFAULT_DIRECTION_DELIMITER;
+
     public interface IRest {
         @POST(Constants.API_LANGUAGES_DATA_PATH)
         Observable<LanguagesResponse> fetchLanguages(@Query(Constants.API_LANGUAGES_UI_PARAM) String ui);
@@ -59,8 +61,10 @@ public class YandexService {
     }
 
     // answers in html format looks same as in plain format - 14.04.17
-    public Observable<TranslateResponse> fetchTranslate(String text, String lang){
-        return mApiRestService.fetchTranslate(text, lang, Constants.API_TRANSLATE_FORMAT_HTML_VALUE).compose(applySchedulers());
+    public Observable<TranslateResponse> fetchTranslate(String text, String srcCode, String destCode){
+        return mApiRestService
+                .fetchTranslate(text, buldLangParam(srcCode, destCode), Constants.API_TRANSLATE_FORMAT_HTML_VALUE)
+                .compose(applySchedulers());
     }
 
     // ===========================================================
@@ -76,5 +80,9 @@ public class YandexService {
                         .observeOn(AndroidSchedulers.mainThread());
             }
         };
+    }
+
+    private String buldLangParam(String srcCode, String destCode){
+        return srcCode+DIRS_DELIMITER+destCode;
     }
 }

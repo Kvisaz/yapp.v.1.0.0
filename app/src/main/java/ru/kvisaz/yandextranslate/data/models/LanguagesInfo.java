@@ -16,7 +16,8 @@ import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.data.rest.models.LanguagesResponse;
 
 public class LanguagesInfo {
-    private static final String DIRS_DELIMITER = "-";
+    private static final String DIRS_DELIMITER = Constants.DEFAULT_DIRECTION_DELIMITER;
+
     private final LanguagesResponse mLanguagesResponse;
 
     private final SortedMap<String, List<String>> sourceLanguages;
