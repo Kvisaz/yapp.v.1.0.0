@@ -4,12 +4,17 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
+import java.util.List;
+import java.util.Map;
+
 import butterknife.BindView;
+import butterknife.OnItemSelected;
 import ru.kvisaz.yandextranslate.R;
 import ru.kvisaz.yandextranslate.common.CommonTabFragment;
 import ru.kvisaz.yandextranslate.data.models.Language;
@@ -25,7 +30,7 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
     @BindView(R.id.destLangSpinner)
     Spinner destLangSpinner;
 
-    private ArrayAdapter<Language> sourceLanguagesAdapter;
+    private ArrayAdapter<Language> sourcesSpinnerAdapter;
     private ArrayAdapter<Language> destLanguagesAdapter;
 
     @Override
@@ -41,8 +46,8 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
 
     @Override
     public void setSourceLanguages(Language[] languages) {
-        sourceLanguagesAdapter = createLanguagesAdapter(languages);
-        sourceLangSpinner.setAdapter(sourceLanguagesAdapter);
+        sourcesSpinnerAdapter = createLanguagesAdapter(languages);
+        sourceLangSpinner.setAdapter(sourcesSpinnerAdapter);
     }
 
     @Override
@@ -53,13 +58,13 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
 
     @Override
     public void selectSourceLanguage(Language language) {
-        int spinnerPosition = sourceLanguagesAdapter.getPosition(language);
+        int spinnerPosition = sourcesSpinnerAdapter.getPosition(language);
         sourceLangSpinner.setSelection(spinnerPosition);
     }
 
     @Override
     public void selectDestinationLanguage(Language language) {
-        destLangSpinner.setSelection(sourceLanguagesAdapter.getPosition(language));
+        destLangSpinner.setSelection(destLanguagesAdapter.getPosition(language));
     }
 
     @Override
@@ -70,6 +75,20 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
     @Override
     public void showOriginalText(String original) {
 
+    }
+
+    @OnItemSelected(R.id.sourceLangSpinner)
+    public void onSourceSelect(Spinner sourceLangSpinner, int position){
+        if(sourcesSpinnerAdapter==null) return;
+        Language source =  sourcesSpinnerAdapter.getItem(position);
+        presenter.onSourceSelect(source);
+    }
+
+    @OnItemSelected(R.id.destLangSpinner)
+    public void onDestinationsSelect(Spinner destLangSpinner, int position){
+        if(destLanguagesAdapter==null) return;
+        Language dest = destLanguagesAdapter.getItem(position);
+        presenter.onDestinationSelect(dest);
     }
 
     private ArrayAdapter<Language> createLanguagesAdapter(Language[] languages) {

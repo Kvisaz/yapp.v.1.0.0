@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import ru.kvisaz.yandextranslate.common.LocaleChecker;
 import ru.kvisaz.yandextranslate.data.ActiveSession;
+import ru.kvisaz.yandextranslate.data.UserSettings;
 import ru.kvisaz.yandextranslate.data.models.Language;
 import ru.kvisaz.yandextranslate.data.models.LanguagesInfo;
 import ru.kvisaz.yandextranslate.di.ComponentProvider;
@@ -26,6 +27,15 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
     @Inject
     LocaleChecker localeChecker;
 
+    @Inject
+    UserSettings userSettings;
+
+    private LanguagesInfo languagesInfo;
+    private Language selectedSource;
+    private Language selectedDestination;
+    private Language[] sourceLangs;
+    private Language[] destLangs;
+
     public TranslatorPresenter() {
         super();
         ComponentProvider.getDataComponent().inject(this);
@@ -33,19 +43,21 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
     @Override
     public void onStart() {
-        LanguagesInfo languagesInfo = ActiveSession.getLanguages();
-        Language[] languagesArray = languagesInfo.getLanguages();
-        getViewState().setSourceLanguages(languagesArray);
+        languagesInfo = ActiveSession.getLanguages();
+        sourceLangs = languagesInfo.getSourceLanguages();
+        selectedSource = findSelectedSourceLanguage();
+        destLangs = languagesInfo.getDestinations(selectedSource.code);
+        selectedDestination = languagesInfo.getDefaultDestination(selectedSource);
 
-        String languageCode = localeChecker.getLanguageCode();
-        Language currentUserLanguage = ActiveSession.getLanguages().getLanguage(languageCode);
-        if (currentUserLanguage != null) {
-            getViewState().selectSourceLanguage(currentUserLanguage);
+        getViewState().setSourceLanguages(sourceLangs);
+        getViewState().selectSourceLanguage(selectedSource);
+        getViewState().setDestinationLanguages(destLangs);
+        if(selectedDestination!=null){
+            getViewState().selectDestinationLanguage(selectedDestination);
         }
-
-        Language[] destinationLanguageArray = languagesInfo.getDestinations(currentUserLanguage);
-        getViewState().setDestinationLanguages(destinationLanguageArray);
     }
+
+
 
     @TargetApi(Build.VERSION_CODES.N)
     public Locale getCurrentLocale() {
@@ -59,17 +71,34 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
     @Override
     public void onSourceSelect(Language sourceLanguage) {
+        if(sourceLanguage.equals(selectedSource)) return; // stop call when select source
 
+        Language tempSelectedSource = selectedSource;
+        selectedSource = sourceLanguage;
+        destLangs = languagesInfo.getDestinations(selectedSource.code);
+        selectedDestination = tempSelectedSource;
+
+        getViewState().setDestinationLanguages(destLangs);
+        getViewState().selectDestinationLanguage(selectedDestination);
     }
 
     @Override
     public void onDestinationSelect(Language destinationLanguage) {
-
+        if(destinationLanguage.equals(selectedDestination)) return; // stop call when select destination
+        selectedDestination = destinationLanguage;
     }
 
     @Override
     public void onSwitchLanguagesButtonClick() {
+        Language tempSelectedSource = selectedSource;
+        selectedSource = selectedDestination;
+        selectedDestination = tempSelectedSource;
 
+        destLangs = languagesInfo.getDestinations(selectedSource.code);
+
+        getViewState().selectDestinationLanguage(selectedSource);
+        getViewState().setDestinationLanguages(destLangs);
+        getViewState().selectDestinationLanguage(selectedDestination);
     }
 
     @Override
@@ -96,4 +125,21 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
     public void onCopyButtonClick() {
 
     }
+
+    private Language findSelectedSourceLanguage() {
+        Language sourceLanguage = userSettings.getLanguage();
+        if(sourceLanguage == null){
+            sourceLanguage =  getLanguageFromCurrentLocale();
+            if(!languagesInfo.hasSource(sourceLanguage)){
+                sourceLanguage = languagesInfo.getDefaultSourceLanguage();
+            }
+        }
+        return sourceLanguage;
+    }
+
+    private Language getLanguageFromCurrentLocale() {
+        String languageCode = localeChecker.getLanguageCode();
+        return ActiveSession.getLanguages().getLanguage(languageCode);
+    }
+
 }

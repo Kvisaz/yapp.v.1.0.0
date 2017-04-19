@@ -34,4 +34,7 @@ public class Constants {
 
     public static final String DEFAULT_LANGUAGE_CODE = "en";
     public static final String DEFAULT_LANGUAGE_DESCRIPTION = "English";
+
+    public static final String DEFAULT_LANGUAGE_2_CODE = "ru";
+    public static final String DEFAULT_LANGUAGE_2_DESCRIPTION = "Русский";
 }
