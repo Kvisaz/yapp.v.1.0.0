@@ -3,8 +3,6 @@ package ru.kvisaz.yandextranslate.screens.translator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
@@ -26,7 +24,7 @@ import ru.kvisaz.yandextranslate.data.ActiveSession;
 import ru.kvisaz.yandextranslate.data.UserSettings;
 import ru.kvisaz.yandextranslate.data.models.Language;
 import ru.kvisaz.yandextranslate.data.models.LanguagesInfo;
-import ru.kvisaz.yandextranslate.data.rest.YandexService;
+import ru.kvisaz.yandextranslate.data.rest.TranslateService;
 import ru.kvisaz.yandextranslate.di.ComponentProvider;
 
 @InjectViewState
@@ -42,7 +40,7 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
     UserSettings userSettings;
 
     @Inject
-    YandexService yandexService;
+    TranslateService translateService;
 
     private LanguagesInfo languagesInfo;
     private Language selectedSource;
@@ -138,7 +136,7 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
         * */
         cancelPreviousInputChange();
         translateDisposable = Observable.just(1).delay(Constants.DELAY_BETWEEN_INPUT_CHANGING_MS, TimeUnit.MILLISECONDS)
-                .flatMap(delay -> yandexService.fetchTranslate(sourceText, selectedSource.code, selectedDestination.code))
+                .flatMap(delay -> translateService.fetchTranslate(sourceText, selectedSource.code, selectedDestination.code))
                 .subscribe((translateResponse -> {
                             translatedText = translateResponse.text.get(0);
                             getViewState().showOriginalText(sourceText);
