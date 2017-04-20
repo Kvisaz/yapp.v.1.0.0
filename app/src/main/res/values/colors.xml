@@ -7,4 +7,9 @@
     <color name="colorLightGray">#dedede</color>
     <color name="colorWhite">#ffffff</color>
     <color name="colorTransparent">@android:color/transparent</color>
+
+    <color name="colorDictOrder">#9B9B9B</color>
+    <color name="colorDictType">#A37D92</color>
+    <color name="colorDictSyns">#4B7893</color>
+    <color name="colorDictMeans">#8D634D</color>
 </resources>

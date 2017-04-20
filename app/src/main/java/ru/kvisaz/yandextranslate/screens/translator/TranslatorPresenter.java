@@ -15,6 +15,7 @@ import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.common.LocaleChecker;
 import ru.kvisaz.yandextranslate.data.ActiveSession;
 import ru.kvisaz.yandextranslate.data.UserSettings;
+import ru.kvisaz.yandextranslate.data.models.DictArticle;
 import ru.kvisaz.yandextranslate.data.models.Language;
 import ru.kvisaz.yandextranslate.data.models.LanguagesInfo;
 import ru.kvisaz.yandextranslate.data.rest.DictApi;
@@ -48,7 +49,7 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
     private String sourceText;
     private String translatedText;
-    private String dictionaryDefinition;
+    private DictArticle dictArticle;
 
     private Runnable fetchTranslateRunnable;
 
@@ -147,9 +148,7 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
     }
 
-     /*
-        *   TODO 3 БОЛЬШОЕ сделать форматирование вывода словаря (через HTML видимо)
-        *   todo 3.1 RecyclerView + Adapter + ItemView + нумерация
+     /*     TODO 3 LandScape
         *   TODO 4 Сохранение в БД статьи с ключом sourceText
     * */
 
@@ -183,8 +182,8 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
         dictService.fetchDefinition(sourceText, from, to, DictApi.LOOKUP_UI_DEFAULT_VALUE)
                 .subscribe(
                         (dictResponse -> {
-                            dictionaryDefinition = dictResponse.def.get(0).text;
-                            getViewState().showDictionaryText(getSpannedFromString(dictionaryDefinition));
+                            dictArticle = new DictArticle(dictResponse);
+                            getViewState().showDictionaryArticle(dictArticle);
                         }),
                         this::handleServerError);
     }

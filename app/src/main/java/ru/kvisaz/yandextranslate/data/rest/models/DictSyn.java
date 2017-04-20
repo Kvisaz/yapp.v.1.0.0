@@ -1,5 +1,5 @@
 package ru.kvisaz.yandextranslate.data.rest.models;
 
-class DictSyn {
+public class DictSyn {
     public String text;
 }

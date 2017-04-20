@@ -43,6 +43,12 @@ public class StartActivity extends MvpAppCompatActivity implements IStartView {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        loaderView.stop(); // если не остановить анимацию, работающий ViewAnimator вызовет утечку
+    }
+
+    @Override
     public void showOfflineScreen() {
         showErrorScreen(getString(R.string.start_screen_internet_error_message_title),
                 getString(R.string.start_screen_internet_error_message_content));
@@ -56,6 +62,7 @@ public class StartActivity extends MvpAppCompatActivity implements IStartView {
         messageContentTextView.setVisibility(View.VISIBLE);
         messageContentTextView.setText(message);
 
+        loaderView.stop();
         loaderView.setVisibility(View.GONE);
 
         okButton.setVisibility(View.VISIBLE);

@@ -3,9 +3,9 @@ package ru.kvisaz.yandextranslate.screens.translator;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.Html;
-import android.text.Spanned;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -20,7 +20,9 @@ import butterknife.OnItemSelected;
 import butterknife.OnTextChanged;
 import ru.kvisaz.yandextranslate.R;
 import ru.kvisaz.yandextranslate.common.CommonTabFragment;
+import ru.kvisaz.yandextranslate.data.models.DictArticle;
 import ru.kvisaz.yandextranslate.data.models.Language;
+import ru.kvisaz.yandextranslate.screens.translator.dict.DictArticleAdapter;
 
 public class TranslatorFragment extends CommonTabFragment implements ITranslatorView {
 
@@ -42,11 +44,15 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
     @BindView(R.id.translatedTextView)
     TextView translatedTextView;
 
-    @BindView(R.id.translatedHtmlTextView)
-    TextView translatedHtmlTextView;
+    @BindView(R.id.dictTypeTextView)
+    TextView dictTypeTextView;
+
+    @BindView(R.id.dictRecyclerView)
+    RecyclerView dictRecyclerView;
 
     private ArrayAdapter<Language> sourcesSpinnerAdapter;
     private ArrayAdapter<Language> destLanguagesAdapter;
+    private DictArticleAdapter dictArticleAdapter;
 
     @Override
     protected int getLayoutResource() {
@@ -56,6 +62,7 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initDictArticleView();
         presenter.onStart();
     }
 
@@ -88,8 +95,9 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
     }
 
     @Override
-    public void showDictionaryText(Spanned article) {
-        translatedHtmlTextView.setText(article);
+    public void showDictionaryArticle(DictArticle article) {
+        dictTypeTextView.setText(article.type);
+        dictArticleAdapter.setArticle(article);
     }
 
     @Override
@@ -103,7 +111,7 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
     }
 
     @OnClick(R.id.cancelButton)
-    public void onCancel(){
+    public void onCancel() {
         inputEditText.setText("");
     }
 
@@ -129,6 +137,12 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
     @NonNull
     private ArrayAdapter<Language> createLanguagesAdapter(Language[] languages) {
         return new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, languages);
+    }
+
+    private void initDictArticleView() {
+        dictArticleAdapter = new DictArticleAdapter(new DictArticle());
+        dictRecyclerView.setAdapter(dictArticleAdapter);
+        dictRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
 }

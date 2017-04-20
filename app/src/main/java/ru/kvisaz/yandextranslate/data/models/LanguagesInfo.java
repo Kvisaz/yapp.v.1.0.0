@@ -24,13 +24,7 @@ public class LanguagesInfo {
 
     public LanguagesInfo(LanguagesResponse languagesResponse) {
         mLanguagesResponse = languagesResponse;
-        // todo delete
-        Log.d(Constants.LOG_TAG, "dirs.size = " + mLanguagesResponse.dirs.length + " langs.size = " + mLanguagesResponse.langs.size());
-
         sourceLanguages = makeDirections(mLanguagesResponse.dirs);
-        // todo delete
-        Log.d(Constants.LOG_TAG, "sourceLanguages.size = " + sourceLanguages.size());
-
     }
 
     public boolean hasSource(Language language){

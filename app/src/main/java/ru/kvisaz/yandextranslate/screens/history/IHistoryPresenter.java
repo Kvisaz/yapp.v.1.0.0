@@ -6,7 +6,6 @@ public interface IHistoryPresenter {
     void onHistorySelect();
     void onFavoritesSelect();
 
-    // todo look how to make infinite recyclerview
     void onItemSelect(SentencePair sentencePair);
     void onDeleteButtonClick();
 
