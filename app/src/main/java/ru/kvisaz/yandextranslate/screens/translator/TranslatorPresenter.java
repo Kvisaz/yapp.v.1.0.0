@@ -1,9 +1,7 @@
 package ru.kvisaz.yandextranslate.screens.translator;
 
-import android.annotation.TargetApi;
-import android.content.Context;
 import android.os.Build;
-import android.text.Editable;
+import android.os.Handler;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -11,13 +9,8 @@ import android.util.Log;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-
 import javax.inject.Inject;
 
-import io.reactivex.Observable;
-import io.reactivex.disposables.Disposable;
 import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.common.LocaleChecker;
 import ru.kvisaz.yandextranslate.data.ActiveSession;
@@ -27,16 +20,13 @@ import ru.kvisaz.yandextranslate.data.models.LanguagesInfo;
 import ru.kvisaz.yandextranslate.data.rest.DictApi;
 import ru.kvisaz.yandextranslate.data.rest.DictService;
 import ru.kvisaz.yandextranslate.data.rest.TranslateService;
-import ru.kvisaz.yandextranslate.data.rest.models.DictDef;
-import ru.kvisaz.yandextranslate.data.rest.models.DictResponse;
-import ru.kvisaz.yandextranslate.data.rest.models.TranslateResponse;
 import ru.kvisaz.yandextranslate.di.ComponentProvider;
 
 @InjectViewState
 public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implements ITranslatorPresenter {
 
     @Inject
-    Context mContext;
+    Handler handler;
 
     @Inject
     LocaleChecker localeChecker;
@@ -60,8 +50,7 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
     private String translatedText;
     private String dictionaryDefinition;
 
-
-    private Disposable translateDisposable;
+    private Runnable fetchTranslateRunnable;
 
     public TranslatorPresenter() {
         super();
@@ -81,17 +70,6 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
         getViewState().setDestinationLanguages(destLangs);
         if (selectedDestination != null) {
             getViewState().selectDestinationLanguage(selectedDestination);
-        }
-    }
-
-
-    @TargetApi(Build.VERSION_CODES.N)
-    public Locale getCurrentLocale() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return mContext.getResources().getConfiguration().getLocales().get(0);
-        } else {
-            //noinspection deprecation
-            return mContext.getResources().getConfiguration().locale;
         }
     }
 
@@ -129,48 +107,20 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
     }
 
     @Override
-    public void onInputChanged(Editable editable) {
-        if (editable.length() < Constants.MINIMAL_WORD_LENGTH) {
-            cancelPreviousInputChange(); // отменяем предыдущий запрос к серверу, продолжается редактирование
-            return;
-        }
-        sourceText = editable.toString();
-        fetchTranslate();
+    public void onInputChanged(String input) {
+        // если редактирование продолжается, отменяем заказ на запрос к серверу, отправляем только когда набор закончился
+        handler.removeCallbacks(fetchTranslateRunnable);
+
+        // чистим и проверяем на минимальную длину запроса
+        String cleanedInput = cleanInput(input);
+        if (cleanedInput.length() < Constants.MINIMAL_WORD_LENGTH) return;
+        sourceText = cleanedInput;
+
+        // заказываем запрос к серверу, который исполнится, если набор закончен
+        // (в течение некоторого времени не будет меняться текст)
+        fetchTranslateRunnable = this::fetchTranslate;
+        handler.postDelayed(fetchTranslateRunnable, Constants.DELAY_BETWEEN_INPUT_CHANGING_MS);
     }
-
-    /*
-    *   TODO 1 Сделать общий троттлинг ввода клавиатуры через Handler - так проще
-    *   TODO 2 Сделать параллельными запросы к переводу и словарю
-    *   TODO 3 БОЛЬШОЕ сделать форматирование вывода словаря (через HTML видимо)    *
-    *
-    * */
-
-    private void fetchTranslate() {
-        /*
-        *   Не посылаем запрос к серверу, пока не пройдет DELAY_BETWEEN_INPUT_CHANGING_MS
-        *   отменяем
-        * */
-        cancelPreviousInputChange();
-        String from = selectedSource.code;
-        String to = selectedDestination.code;
-
-        Observable<TranslateResponse> translateResponseObservable = translateService.fetchTranslate(sourceText, from, to);
-        Observable<DictResponse> dictDefObservable = dictService.fetchDefinition(sourceText, from, to, DictApi.LOOKUP_UI_DEFAULT_VALUE);
-
-        translateDisposable = Observable.just(1).delay(Constants.DELAY_BETWEEN_INPUT_CHANGING_MS, TimeUnit.MILLISECONDS)
-                .flatMap(delay -> Observable.zip(translateResponseObservable, dictDefObservable, ((translateResponse, dictDef) -> new CombinedResponse(translateResponse, dictDef))))
-                .subscribe((combinedResponse -> {
-                            translatedText = combinedResponse.translateResponse.text.get(0);
-                            dictionaryDefinition = combinedResponse.dictResponse.def.get(0).text;
-                            getViewState().showOriginalText(sourceText);
-                            getViewState().showTranslatedText(translatedText);
-                            getViewState().showDictionaryText(getSpannedFromString(dictionaryDefinition));
-                        }),
-                        throwable -> {
-                            Log.d(Constants.LOG_TAG, throwable.getMessage());
-                        });
-    }
-
 
     @Override
     public void onMakeFavoriteCheck(Boolean checked) {
@@ -197,6 +147,52 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
     }
 
+     /*
+        *   TODO 3 БОЛЬШОЕ сделать форматирование вывода словаря (через HTML видимо)
+        *   todo 3.1 RecyclerView + Adapter + ItemView + нумерация
+        *   TODO 4 Сохранение в БД статьи с ключом sourceText
+    * */
+
+    private String cleanInput(String text) {
+        return text.trim();
+    }
+
+    private void fetchTranslate() {
+        String from = selectedSource.code;
+        String to = selectedDestination.code;
+
+        // Запрос на перевод
+        fetchYandexTranslateApi(sourceText, from, to);
+
+        // Запрос на словарную статью
+        fetchYandexDictApi(sourceText, from, to);
+    }
+
+    private void fetchYandexTranslateApi(String sourceText, String from, String to) {
+        translateService.fetchTranslate(sourceText, from, to)
+                .subscribe(
+                        (translateResponse -> {
+                            translatedText = translateResponse.text.get(0);
+                            getViewState().showOriginalText(sourceText);
+                            getViewState().showTranslatedText(translatedText);
+                        }),
+                        this::handleServerError);
+    }
+
+    private void fetchYandexDictApi(String sourceText, String from, String to) {
+        dictService.fetchDefinition(sourceText, from, to, DictApi.LOOKUP_UI_DEFAULT_VALUE)
+                .subscribe(
+                        (dictResponse -> {
+                            dictionaryDefinition = dictResponse.def.get(0).text;
+                            getViewState().showDictionaryText(getSpannedFromString(dictionaryDefinition));
+                        }),
+                        this::handleServerError);
+    }
+
+    private void handleServerError(Throwable throwable) {
+        Log.d(Constants.LOG_TAG, throwable.getMessage());
+    }
+
     private Language findSelectedSourceLanguage() {
         Language sourceLanguage = userSettings.getLanguage();
         if (sourceLanguage == null) {
@@ -213,12 +209,6 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
         return ActiveSession.getLanguages().getLanguage(languageCode);
     }
 
-    private void cancelPreviousInputChange() {
-        if (translateDisposable != null) {
-            translateDisposable.dispose();
-        }
-    }
-
     private Spanned getSpannedFromString(String code) {
         Spanned spanned;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -228,15 +218,4 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
         }
         return spanned;
     }
-
-    private class CombinedResponse {
-        public final TranslateResponse translateResponse;
-        public final DictResponse dictResponse;
-
-        public CombinedResponse(TranslateResponse translateResponse, DictResponse dictResponse) {
-            this.translateResponse = translateResponse;
-            this.dictResponse = dictResponse;
-        }
-    }
-
 }

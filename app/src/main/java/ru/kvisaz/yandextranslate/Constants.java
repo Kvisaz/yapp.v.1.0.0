@@ -20,6 +20,6 @@ public class Constants {
     public static final String DEFAULT_LANGUAGE_2_DESCRIPTION = "Русский";
 
     public static final int MINIMAL_WORD_LENGTH = 1;
-    public static final long DELAY_BETWEEN_INPUT_CHANGING_MS = 500;
+    public static final long DELAY_BETWEEN_INPUT_CHANGING_MS = 650;
 
 }

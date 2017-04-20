@@ -1,6 +1,9 @@
 package ru.kvisaz.yandextranslate.di;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.LocaleList;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 
 import javax.inject.Singleton;
@@ -29,5 +32,11 @@ public class AppModule {
     LocaleChecker providesLocaleChecker(Context context) {
         final LocaleChecker localeChecker = new LocaleChecker(context);
         return localeChecker;
+    }
+
+    @Provides
+    Handler providesHandler(){
+        final Handler handler = new Handler(Looper.getMainLooper());
+        return handler;
     }
 }

@@ -1,12 +1,14 @@
 package ru.kvisaz.yandextranslate.screens.translator;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -30,6 +32,9 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
 
     @BindView(R.id.destLangSpinner)
     Spinner destLangSpinner;
+
+    @BindView(R.id.inputEditText)
+    EditText inputEditText;
 
     @BindView(R.id.sourceTextView)
     TextView sourceTextView;
@@ -97,9 +102,14 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
         presenter.onSwitchLanguagesButtonClick();
     }
 
+    @OnClick(R.id.cancelButton)
+    public void onCancel(){
+        inputEditText.setText("");
+    }
+
     @OnTextChanged(R.id.inputEditText)
     public void onInputChange(Editable editable) {
-        presenter.onInputChanged(editable);
+        presenter.onInputChanged(editable.toString());
     }
 
     @OnItemSelected(R.id.sourceLangSpinner)
@@ -116,6 +126,7 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
         presenter.onDestinationSelect(dest);
     }
 
+    @NonNull
     private ArrayAdapter<Language> createLanguagesAdapter(Language[] languages) {
         return new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, languages);
     }
