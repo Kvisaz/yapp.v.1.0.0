@@ -1,9 +1,6 @@
 package ru.kvisaz.yandextranslate.screens.translator;
 
-import android.os.Build;
 import android.os.Handler;
-import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
@@ -52,6 +49,18 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
     private DictArticle dictArticle;
 
     private Runnable fetchTranslateRunnable;
+
+
+     /*
+        *   TODO 4 Сохранение в БД статьи с ключом sourceText
+    * */
+
+     /*
+     *   todo BUG - при смене ориентации происходит повторная отправка данных (онТестЧейндж)
+     *          -- должно автоматически поправиться при вводе кэширующего репозитория
+     * */
+
+
 
     public TranslatorPresenter() {
         super();
@@ -112,7 +121,7 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
         // если редактирование продолжается, отменяем заказ на запрос к серверу, отправляем только когда набор закончился
         handler.removeCallbacks(fetchTranslateRunnable);
 
-        // чистим и проверяем на минимальную длину запроса
+        // чистим от пробелов и лишних переводов
         String cleanedInput = cleanInput(input);
         if (cleanedInput.length() < Constants.MINIMAL_WORD_LENGTH) return;
         sourceText = cleanedInput;
@@ -148,12 +157,8 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
     }
 
-     /*     TODO 3 LandScape
-        *   TODO 4 Сохранение в БД статьи с ключом sourceText
-    * */
-
     private String cleanInput(String text) {
-        return text.trim();
+        return text.trim().replaceAll("[\n]{2,}", "\n");
     }
 
     private void fetchTranslate() {
@@ -206,15 +211,5 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
     private Language getLanguageFromCurrentLocale() {
         String languageCode = localeChecker.getLanguageCode();
         return ActiveSession.getLanguages().getLanguage(languageCode);
-    }
-
-    private Spanned getSpannedFromString(String code) {
-        Spanned spanned;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            spanned = Html.fromHtml(code, Html.FROM_HTML_MODE_COMPACT);
-        } else {
-            spanned = Html.fromHtml(code);
-        }
-        return spanned;
     }
 }

@@ -8,7 +8,7 @@
     <View
         android:id="@+id/topPanelBgView"
         android:layout_width="0dp"
-        android:layout_height="72dp"
+        android:layout_height="@dimen/toolbar_height"
         android:background="@color/colorPrimary"
 
         app:layout_constraintLeft_toLeftOf="parent"
@@ -57,66 +57,65 @@
         app:layout_constraintRight_toRightOf="@id/topPanelBgView"
         app:layout_constraintTop_toTopOf="@id/topPanelBgView" />
 
-    <FrameLayout
-        android:id="@+id/inputFrameLayout"
+    <EditText
+        android:id="@+id/inputEditText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/translate_input_edittext_height"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/pixel_gray_rectangle"
 
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-
-        android:paddingTop="4dp"
+        android:inputType="textCapSentences|textMultiLine"
+        android:maxLength="10000"
+        android:paddingBottom="24dp"
         android:paddingLeft="4dp"
-        android:paddingRight="4dp"
+        android:gravity="top"
+
+        android:paddingRight="24dp"
+        android:paddingTop="4dp"
+        android:scrollHorizontally="false"
 
         app:layout_constraintLeft_toLeftOf="@id/topPanelBgView"
-        app:layout_constraintRight_toRightOf="@id/topPanelBgView"
-        app:layout_constraintTop_toBottomOf="@id/topPanelBgView"
-        >
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topPanelBgView" />
 
-        <EditText
-            android:id="@+id/inputEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textCapSentences|textMultiLine"
-            android:minLines="4"
-            android:maxLength="10000"
-            android:background="@null"
-            android:layout_gravity="left|top"
-            android:layout_marginRight="24dp"
-            android:layout_marginBottom="24dp"
-            android:scrollHorizontally="false"
-            />
 
-        <ImageButton
-            android:id="@+id/voiceInputButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|top"
-            android:background="@color/colorTransparent"
-            android:src="@drawable/ic_voice" />
+    <ImageButton
+        android:id="@+id/voiceInputButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|top"
+        android:background="@color/colorTransparent"
+        app:srcCompat="@drawable/translate_input_phone_button"
+        android:layout_marginRight="12dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/topPanelBgView" />
 
-        <ImageButton
-            android:id="@+id/voicePlayButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/colorTransparent"
-            android:src="@drawable/ic_action_volume_up"
-            android:layout_gravity="right|top"
-            android:layout_marginTop="36dp"
-            />
+    <ImageButton
+        android:id="@+id/cancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorTransparent"
+        app:srcCompat="@drawable/translate_cancel_button"
+        android:layout_gravity="left|bottom"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/translatedTextView"
+        android:layout_marginLeft="12dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
-        <ImageButton
-            android:id="@+id/cancelButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@color/colorTransparent"
-            android:src="@drawable/ic_cross_cancel"
-            android:layout_gravity="left|bottom"
-            android:layout_marginTop="36dp"
-            />
-
-    </FrameLayout>
+    <ImageButton
+        android:id="@+id/inputVoicePlayButton"
+        app:srcCompat="@drawable/translate_input_voice_play_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right|top"
+        android:background="@color/colorTransparent"
+        android:layout_marginRight="0dp"
+        app:layout_constraintRight_toRightOf="@+id/voiceInputButton"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@+id/voiceInputButton" />
 
     <TextView
         android:id="@+id/translatedTextView"
@@ -126,9 +125,12 @@
 
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputFrameLayout"
-        tools:text="Hi" />
+        app:layout_constraintTop_toBottomOf="@+id/inputEditText"
+        tools:text="Hi"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintRight_toLeftOf="@+id/translateVoicePlayButton"
+        android:layout_marginRight="0dp" />
 
     <TextView
         android:id="@+id/sourceTextView"
@@ -138,40 +140,92 @@
 
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/translatedTextView"
-        tools:text="Привет" />
+        tools:text="Привет"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="0dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintRight_toLeftOf="@+id/bookmarkButton" />
 
     <TextView
         android:id="@+id/dictTypeTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
         android:textStyle="italic"
         android:textColor="@color/colorDictType"
 
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toRightOf="@+id/sourceTextView"
         app:layout_constraintTop_toBottomOf="@+id/sourceTextView"
 
-        tools:text="сущ" />
-    
+        tools:text="сущ"
+        app:layout_constraintHorizontal_bias="0.0" />
+
+    <ImageButton
+        android:id="@+id/translateVoicePlayButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorTransparent"
+        app:srcCompat="@drawable/translate_input_phone_button"
+        android:layout_marginRight="12dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/translatedTextView"
+        android:layout_marginTop="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/translatedTextView"
+        android:layout_marginBottom="0dp" />
+
+    <ImageButton
+        android:id="@+id/bookmarkButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorTransparent"
+        app:srcCompat="@drawable/translate_bookmark_button"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="12dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/translateVoicePlayButton" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/dictRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
         android:layout_marginBottom="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="0dp"
         android:layout_marginTop="4dp"
 
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@+id/dictTypeTextView"
         app:layout_constraintTop_toBottomOf="@+id/dictTypeTextView"
-        />
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageButton
+        android:id="@+id/shareButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/colorTransparent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bookmarkButton"
+        app:srcCompat="@drawable/translate_share_button" />
+
+    <ImageButton
+        android:id="@+id/copyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/colorTransparent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shareButton"
+        app:srcCompat="@drawable/translate_copy_button" />
 
 
 </android.support.constraint.ConstraintLayout>
