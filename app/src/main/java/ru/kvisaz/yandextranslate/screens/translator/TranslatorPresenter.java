@@ -56,25 +56,26 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
     * */
 
      /*
-     *   todo BUG - при смене ориентации происходит повторная отправка данных (онТестЧейндж)
-     *          -- должно автоматически поправиться при вводе кэширующего репозитория
+     *        *
+     *   todo BUG - ландскейп выглядит убого, не видна словарная статья
      * */
-
 
 
     public TranslatorPresenter() {
         super();
         ComponentProvider.getDataComponent().inject(this);
-    }
 
-    @Override
-    public void onStart() {
+        sourceText = "";
+        translatedText = "";
         languagesInfo = ActiveSession.getLanguages();
         sourceLangs = languagesInfo.getSourceLanguages();
         selectedSource = findSelectedSourceLanguage();
         destLangs = languagesInfo.getDestinations(selectedSource.code);
         selectedDestination = languagesInfo.getDefaultDestination(selectedSource);
+    }
 
+    @Override
+    public void onStart() {
         getViewState().setSourceLanguages(sourceLangs);
         getViewState().selectSourceLanguage(selectedSource);
         getViewState().setDestinationLanguages(destLangs);
@@ -118,12 +119,17 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
     @Override
     public void onInputChanged(String input) {
+        // чистим от пробелов и лишних переводов
+        String cleanedInput = cleanInput(input);
+        if(sourceText.equals(cleanedInput)) return;
+
         // если редактирование продолжается, отменяем заказ на запрос к серверу, отправляем только когда набор закончился
         handler.removeCallbacks(fetchTranslateRunnable);
 
-        // чистим от пробелов и лишних переводов
-        String cleanedInput = cleanInput(input);
+        // не обрабатываем пустые запросы
         if (cleanedInput.length() < Constants.MINIMAL_WORD_LENGTH) return;
+
+        // обновляем поле
         sourceText = cleanedInput;
 
         // заказываем запрос к серверу, который исполнится, если набор закончен

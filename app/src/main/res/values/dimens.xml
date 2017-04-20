@@ -2,5 +2,5 @@
 <resources>
     <dimen name="toolbar_height">72dp</dimen>
     <dimen name="translate_input_edittext_height">108dp</dimen>
-    <dimen name="translate_landscape_layout_height">450dp</dimen>
+    <dimen name="translate_landscape_layout_height">700dp</dimen>
 </resources>
