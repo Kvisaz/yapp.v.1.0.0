@@ -38,7 +38,7 @@ public class DictArticleAdapter extends RecyclerView.Adapter<DictArticleViewHold
         }
         else{
             holder.meanTextView.setVisibility(View.VISIBLE);
-            holder.meanTextView.setText(mean);
+            holder.meanTextView.setText("( "+mean + " )");
         }
 
     }

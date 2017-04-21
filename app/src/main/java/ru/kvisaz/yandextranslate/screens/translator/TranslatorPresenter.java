@@ -12,6 +12,7 @@ import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.common.LocaleChecker;
 import ru.kvisaz.yandextranslate.data.ActiveSession;
 import ru.kvisaz.yandextranslate.data.UserSettings;
+import ru.kvisaz.yandextranslate.data.database.HistoryService;
 import ru.kvisaz.yandextranslate.data.models.DictArticle;
 import ru.kvisaz.yandextranslate.data.models.Language;
 import ru.kvisaz.yandextranslate.data.models.LanguagesInfo;
@@ -37,6 +38,9 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
     @Inject
     DictService dictService;
+
+    @Inject
+    HistoryService historyService;
 
     private LanguagesInfo languagesInfo;
     private Language selectedSource;
@@ -72,6 +76,13 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
         selectedSource = findSelectedSourceLanguage();
         destLangs = languagesInfo.getDestinations(selectedSource.code);
         selectedDestination = languagesInfo.getDefaultDestination(selectedSource);
+
+        // todo delete after test
+        historyService.fetchHistory()
+                .subscribe((historyEntities -> {
+                            Log.d(Constants.LOG_TAG, historyEntities.toString());
+                        })
+                        , this::handleServerError);
     }
 
     @Override
@@ -185,6 +196,7 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
                             translatedText = translateResponse.text.get(0);
                             getViewState().showOriginalText(sourceText);
                             getViewState().showTranslatedText(translatedText);
+                            saveTranslateToHistory(sourceText, translatedText, from, to);
                         }),
                         this::handleServerError);
     }
@@ -195,8 +207,24 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
                         (dictResponse -> {
                             dictArticle = new DictArticle(dictResponse);
                             getViewState().showDictionaryArticle(dictArticle);
+                            saveDictToHistory(sourceText, dictArticle);
                         }),
                         this::handleServerError);
+    }
+
+    private void saveTranslateToHistory(String sourceText, String translatedText, String from, String to) {
+        historyService.save(sourceText, translatedText, from, to)
+                .subscribe((id -> {
+                    Log.d(Constants.LOG_TAG, "Save Translate with id=" + id);
+                }), this::handleServerError);
+    }
+
+    private void saveDictToHistory(String sourceText, DictArticle dictArticle) {
+        if (dictArticle.isEmpty) return;
+        historyService.save(sourceText, dictArticle)
+                .subscribe((id -> {
+                    Log.d(Constants.LOG_TAG, "Save dictArticle with id=" + id);
+                }), this::handleServerError);
     }
 
     private void handleServerError(Throwable throwable) {

@@ -1,6 +1,5 @@
 package ru.kvisaz.yandextranslate.data;
 
-import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.data.models.Language;
 
 public class UserSettings {
@@ -10,7 +9,6 @@ public class UserSettings {
     public Language getLanguage() {
         return mLanguage;
     }
-
 
 
     public void setLanguage(Language language) {

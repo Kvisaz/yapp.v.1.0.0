@@ -12,7 +12,6 @@ import ru.kvisaz.yandextranslate.data.rest.models.DictTr;
 
 public class DictArticle {
     private final static String WORD_DELIMITER = ", ";
-    private final static String MEAN_START_SYMBOL = "(";
 
     public final String text;
     public final String type;
@@ -57,8 +56,7 @@ public class DictArticle {
 
         if (translate.syn != null) {
             for (DictSyn syn : translate.syn) {
-                sb.append(WORD_DELIMITER);
-                sb.append(syn.text);
+                sb.append(WORD_DELIMITER).append(syn.text);
             }
         }
 
@@ -69,15 +67,12 @@ public class DictArticle {
         if (translate == null || translate.mean == null || translate.mean.size() == 0) {
             return StringUtils.EMPTY_STRING;
         }
-
         StringBuilder sb = new StringBuilder();
-        boolean nonFirst = false;
+
         for (DictMean mean : translate.mean) {
-            if (nonFirst) {
-                sb.append(WORD_DELIMITER);
-            }
-            sb.append(mean.text);
+            sb.append(mean.text).append(WORD_DELIMITER);
         }
+        sb.deleteCharAt(sb.length() - 1);
 
         return sb.toString();
     }

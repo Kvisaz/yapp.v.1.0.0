@@ -68,4 +68,6 @@ dependencies {
     compile "com.arello-mobile:moxy-app-compat:$moxy_version"
 
     compile "com.github.biodunalfet:SlidingSquaresLoader:1.0"
+
+    compile 'nl.qbusict:cupboard:2.2.0'
 }
