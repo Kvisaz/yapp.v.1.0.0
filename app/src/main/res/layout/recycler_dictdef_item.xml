@@ -18,7 +18,7 @@
         tools:text="1" />
 
     <TextView
-        android:id="@+id/synTextView"
+        android:id="@+id/sourceTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
@@ -30,13 +30,13 @@
         />
 
     <TextView
-        android:id="@+id/meanTextView"
+        android:id="@+id/translateTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="0dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintLeft_toLeftOf="@+id/synTextView"
-        app:layout_constraintTop_toBottomOf="@+id/synTextView"
+        app:layout_constraintLeft_toLeftOf="@+id/sourceTextView"
+        app:layout_constraintTop_toBottomOf="@+id/sourceTextView"
         android:textColor="@color/colorDictMeans"
         tools:text="(приветствие)"
         />

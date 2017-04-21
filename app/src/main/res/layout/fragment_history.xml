@@ -1,18 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <View
         android:id="@+id/topPanelBgView"
         android:layout_width="0dp"
-        android:layout_height="@dimen/toolbar_height"
+        android:layout_height="72dp"
         android:background="@color/colorPrimary"
 
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/historyModeTabLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/topPanelBgView"
+        app:layout_constraintLeft_toLeftOf="@+id/topPanelBgView"
+
+        app:layout_constraintRight_toRightOf="@+id/topPanelBgView"
+        app:layout_constraintTop_toTopOf="@+id/topPanelBgView"
+        app:tabGravity="center"
+        app:tabIndicatorColor="@color/colorBlack"
+        app:tabTextAppearance="@style/HistoryTabWidgetAppearance"
+        app:layout_constraintVertical_bias="0.0">
+
+        <android.support.design.widget.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/history_mode_history"
+            />
+
+        <android.support.design.widget.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/history_mode_favorites"
+            />
+
+    </android.support.design.widget.TabLayout>
+
+    <ImageButton
+        android:id="@+id/historyDeleteButton"
+        android:enabled="false"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="12dp"
+        android:background="@color/colorTransparent"
+        app:layout_constraintBottom_toBottomOf="@+id/historyModeTabLayout"
+        app:layout_constraintRight_toRightOf="@+id/topPanelBgView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/history_delete_button"
+        android:layout_marginEnd="12dp" />
+
+    <EditText
+        android:id="@+id/historySearchEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+
+        android:layout_marginTop="8dp"
+        android:background="@color/colorTransparent"
+        android:ems="10"
+        android:hint="@string/history_search_hint"
+        android:inputType="textPersonName"
+        android:padding="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/historyModeTabLayout"
+        app:layout_constraintLeft_toRightOf="@+id/historySearchButton"
+        android:layout_marginLeft="8dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/historyRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/historySearchEditText" />
+
+    <ImageButton
+        android:id="@+id/historySearchButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorTransparent"
+        app:srcCompat="@drawable/history_search_button"
+        android:layout_marginLeft="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/historySearchEditText"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/historySearchEditText"
+        android:layout_marginBottom="8dp" />
 
 
 </android.support.constraint.ConstraintLayout>

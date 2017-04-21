@@ -12,10 +12,10 @@ class DictArticleViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.orderNumberTextView)
     TextView orderNumberTextView;
 
-    @BindView(R.id.synTextView)
+    @BindView(R.id.sourceTextView)
     TextView synTextView;
 
-    @BindView(R.id.meanTextView)
+    @BindView(R.id.translateTextView)
     TextView meanTextView;
 
 

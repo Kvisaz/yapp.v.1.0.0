@@ -15,7 +15,7 @@ import ru.kvisaz.yandextranslate.R;
 
 public class TabActivity extends MvpAppCompatActivity {
 
-    private int defaultSelectedTabPosition = 0;
+    private final static int DEFAULT_SELECTED_PAGE = 0;
 
     @BindView(R.id.mainViewPager)
     protected ViewPager viewPager;
@@ -33,7 +33,7 @@ public class TabActivity extends MvpAppCompatActivity {
         initTabs();
         setupTabsListener();
         setupTabIcons();
-        selectTab(defaultSelectedTabPosition);
+        selectTab(DEFAULT_SELECTED_PAGE);
     }
 
     private void initTabs() {
@@ -60,19 +60,17 @@ public class TabActivity extends MvpAppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager) {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                super.onTabSelected(tab);
-                makeIconAccented(tab);
+                selectTab(tab.getPosition());
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                super.onTabUnselected(tab);
                 makeIconNonAccented(tab);
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-                super.onTabReselected(tab);
+
             }
         });
     }

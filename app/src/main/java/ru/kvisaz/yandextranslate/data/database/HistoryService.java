@@ -66,7 +66,9 @@ public class HistoryService extends RxService {
 
 
     public Observable<List<HistoryEntity>> fetchHistory() {
-        return Observable.fromCallable(() -> getEntityQuery().list())
+        return Observable.fromCallable(() -> getEntityQuery()
+                .orderBy("_id desc")
+                .list())
                 .compose(applySchedulers());
     }
 

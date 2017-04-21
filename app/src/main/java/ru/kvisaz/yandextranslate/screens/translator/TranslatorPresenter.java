@@ -56,7 +56,12 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
 
      /*
-        *   TODO 4 Сохранение в БД статьи с ключом sourceText
+        *   TODO 1 History Fragment
+        *           - RecyclerView
+        *           - ViewHolder
+        *           - Adapter
+        *           - Reading? when?
+        *
     * */
 
      /*
@@ -76,13 +81,6 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
         selectedSource = findSelectedSourceLanguage();
         destLangs = languagesInfo.getDestinations(selectedSource.code);
         selectedDestination = languagesInfo.getDefaultDestination(selectedSource);
-
-        // todo delete after test
-        historyService.fetchHistory()
-                .subscribe((historyEntities -> {
-                            Log.d(Constants.LOG_TAG, historyEntities.toString());
-                        })
-                        , this::handleServerError);
     }
 
     @Override

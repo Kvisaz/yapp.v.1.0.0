@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageButton
+        android:id="@+id/historyItemBookmarkButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorTransparent"
+        app:srcCompat="@drawable/history_bookmark_button"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/historyItemSourceTextView"
+        app:layout_constraintBottom_toBottomOf="@+id/historyItemTranslateTextView"
+        app:layout_constraintVertical_bias="0.428"
+         />
+
+    <TextView
+        android:id="@+id/historyItemSourceTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:textColor="@color/colorBlack"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Привет"
+        app:layout_constraintLeft_toRightOf="@+id/historyItemBookmarkButton"
+
+         />
+
+    <TextView
+        android:id="@+id/historyItemTranslateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/colorGray"
+        app:layout_constraintLeft_toLeftOf="@+id/historyItemSourceTextView"
+        app:layout_constraintTop_toBottomOf="@+id/historyItemSourceTextView"
+        tools:text="Hi"
+
+        android:layout_marginLeft="0dp" />
+
+    <View
+        android:id="@+id/historyItemDelimiterView"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/colorLightGray"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/historyItemTranslateTextView"
+        android:layout_marginTop="16dp"
+        />
+
+    <TextView
+        android:id="@+id/historyItemDirectionTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="0dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+        android:textAllCaps="true"
+        app:layout_constraintBottom_toBottomOf="@+id/historyItemTranslateTextView"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/historyItemSourceTextView"
+        tools:text="en-ru" />
+
+
+</android.support.constraint.ConstraintLayout>

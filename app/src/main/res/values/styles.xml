@@ -19,6 +19,12 @@
     </style>
 
     <style name="MyCustomTabLayoutTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>0
+    </style>
+
+    <style name="HistoryTabWidgetAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">normal</item>
         <item name="textAllCaps">false</item>
     </style>
 
