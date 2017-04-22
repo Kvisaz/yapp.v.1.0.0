@@ -10,7 +10,7 @@ import dagger.Module;
 import dagger.Provides;
 import ru.kvisaz.yandextranslate.data.UserSettings;
 import ru.kvisaz.yandextranslate.data.database.HistoryDatabaseHelper;
-import ru.kvisaz.yandextranslate.data.database.HistoryService;
+import ru.kvisaz.yandextranslate.data.database.HistoryDbService;
 
 @Module
 public class DatabaseModule {
@@ -36,7 +36,7 @@ public class DatabaseModule {
 
     @Provides
     @Singleton
-    public HistoryService providesHistoryService(SQLiteDatabase sqLiteDatabase) {
-        return new HistoryService(sqLiteDatabase);
+    public HistoryDbService providesHistoryService(SQLiteDatabase sqLiteDatabase) {
+        return new HistoryDbService(sqLiteDatabase);
     }
 }

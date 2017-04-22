@@ -10,12 +10,12 @@ public class StringUtils {
         return input;
     }
 
-    public static String joinToString(List<String> strings, String delimiter){
+    public static String joinToString(List<String> strings, String delimiter) {
         StringBuilder sb = new StringBuilder();
-        for(String s: strings){
+        for (String s : strings) {
             sb.append(s).append(delimiter);
         }
-        sb.deleteCharAt(sb.length()-1); // delete last delimiter
+        sb.delete(sb.length() - delimiter.length(), sb.length());
         return sb.toString();
     }
 }

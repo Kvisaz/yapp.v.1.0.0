@@ -11,14 +11,15 @@ import javax.inject.Inject;
 import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.common.LocaleChecker;
 import ru.kvisaz.yandextranslate.data.ActiveSession;
+import ru.kvisaz.yandextranslate.data.TranslateRepository;
 import ru.kvisaz.yandextranslate.data.UserSettings;
-import ru.kvisaz.yandextranslate.data.database.HistoryService;
+import ru.kvisaz.yandextranslate.data.database.HistoryDbService;
 import ru.kvisaz.yandextranslate.data.models.DictArticle;
 import ru.kvisaz.yandextranslate.data.models.Language;
 import ru.kvisaz.yandextranslate.data.models.LanguagesInfo;
 import ru.kvisaz.yandextranslate.data.rest.DictApi;
-import ru.kvisaz.yandextranslate.data.rest.DictService;
-import ru.kvisaz.yandextranslate.data.rest.TranslateService;
+import ru.kvisaz.yandextranslate.data.rest.DictRestService;
+import ru.kvisaz.yandextranslate.data.rest.TranslateRestService;
 import ru.kvisaz.yandextranslate.di.ComponentProvider;
 
 @InjectViewState
@@ -34,13 +35,16 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
     UserSettings userSettings;
 
     @Inject
-    TranslateService translateService;
+    TranslateRestService translateRestService;
 
     @Inject
-    DictService dictService;
+    DictRestService dictRestService;
 
     @Inject
-    HistoryService historyService;
+    HistoryDbService historyDbService;
+
+    @Inject
+    TranslateRepository translateRepository;
 
     private LanguagesInfo languagesInfo;
     private Language selectedSource;
@@ -56,11 +60,9 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
 
      /*
-        *   TODO 1 History Fragment
-        *           - RecyclerView
-        *           - ViewHolder
-        *           - Adapter
-        *           - Reading? when?
+        *   TODO 1 IndexOutOfBoundsException: Invalid index 1, size is 1  при чтении слова Печень
+        *   TODO 2  Сохранение запроса в базу данных после получения в Репозитории
+        *   TODO 3
         *
     * */
 
@@ -130,7 +132,7 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
     public void onInputChanged(String input) {
         // чистим от пробелов и лишних переводов
         String cleanedInput = cleanInput(input);
-        if(sourceText.equals(cleanedInput)) return;
+        if (sourceText.equals(cleanedInput)) return;
 
         // если редактирование продолжается, отменяем заказ на запрос к серверу, отправляем только когда набор закончился
         handler.removeCallbacks(fetchTranslateRunnable);
@@ -180,50 +182,27 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
         String from = selectedSource.code;
         String to = selectedDestination.code;
 
-        // Запрос на перевод
-        fetchYandexTranslateApi(sourceText, from, to);
-
-        // Запрос на словарную статью
-        fetchYandexDictApi(sourceText, from, to);
-    }
-
-    private void fetchYandexTranslateApi(String sourceText, String from, String to) {
-        translateService.fetchTranslate(sourceText, from, to)
+        // todo select UI in settings
+        translateRepository.fetchTranslate(sourceText, from, to, DictApi.LOOKUP_UI_DEFAULT_VALUE)
                 .subscribe(
-                        (translateResponse -> {
-                            translatedText = translateResponse.text.get(0);
+                        (translate -> {
+                            translatedText = translate.getText();
+                            dictArticle = translate.getDictArticle();
                             getViewState().showOriginalText(sourceText);
                             getViewState().showTranslatedText(translatedText);
-                            saveTranslateToHistory(sourceText, translatedText, from, to);
-                        }),
-                        this::handleServerError);
-    }
-
-    private void fetchYandexDictApi(String sourceText, String from, String to) {
-        dictService.fetchDefinition(sourceText, from, to, DictApi.LOOKUP_UI_DEFAULT_VALUE)
-                .subscribe(
-                        (dictResponse -> {
-                            dictArticle = new DictArticle(dictResponse);
                             getViewState().showDictionaryArticle(dictArticle);
-                            saveDictToHistory(sourceText, dictArticle);
-                        }),
+
+                            // todo to repo
+                            historyDbService.save(translate).subscribe(
+                                    (id -> {
+                                        Log.d(Constants.LOG_TAG, "Saved id = " + id);
+                                    }), this::handleServerError
+                            );
+                        }
+                        ),
                         this::handleServerError);
     }
 
-    private void saveTranslateToHistory(String sourceText, String translatedText, String from, String to) {
-        historyService.save(sourceText, translatedText, from, to)
-                .subscribe((id -> {
-                    Log.d(Constants.LOG_TAG, "Save Translate with id=" + id);
-                }), this::handleServerError);
-    }
-
-    private void saveDictToHistory(String sourceText, DictArticle dictArticle) {
-        if (dictArticle.isEmpty) return;
-        historyService.save(sourceText, dictArticle)
-                .subscribe((id -> {
-                    Log.d(Constants.LOG_TAG, "Save dictArticle with id=" + id);
-                }), this::handleServerError);
-    }
 
     private void handleServerError(Throwable throwable) {
         Log.d(Constants.LOG_TAG, throwable.getMessage());

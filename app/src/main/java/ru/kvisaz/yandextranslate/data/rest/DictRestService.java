@@ -9,7 +9,7 @@ import ru.kvisaz.yandextranslate.common.RxRestService;
 import ru.kvisaz.yandextranslate.data.rest.models.DictDef;
 import ru.kvisaz.yandextranslate.data.rest.models.DictResponse;
 
-public class DictService extends RxRestService {
+public class DictRestService extends RxRestService {
 
     public interface IRest {
         @POST(DictApi.LOOKUP_PATH)
@@ -21,7 +21,7 @@ public class DictService extends RxRestService {
     private IRest mRestService;
 
     @Inject
-    public DictService(IRest rest) {
+    public DictRestService(IRest rest) {
         mRestService = rest;
     }
 

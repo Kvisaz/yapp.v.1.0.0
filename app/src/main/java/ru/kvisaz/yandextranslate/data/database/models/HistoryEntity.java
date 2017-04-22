@@ -71,4 +71,5 @@ public class HistoryEntity {
     public void setMeans(List<String> means) {
         meanStringsEncoded = StringUtils.joinToString(means, DbConstants.DEFAULT_DELIMITER);
     }
+
 }

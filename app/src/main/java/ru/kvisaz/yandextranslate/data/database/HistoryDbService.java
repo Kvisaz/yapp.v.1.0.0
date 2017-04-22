@@ -9,14 +9,15 @@ import nl.qbusict.cupboard.DatabaseCompartment;
 import ru.kvisaz.yandextranslate.common.RxService;
 import ru.kvisaz.yandextranslate.data.database.models.HistoryEntity;
 import ru.kvisaz.yandextranslate.data.models.DictArticle;
+import ru.kvisaz.yandextranslate.data.models.Translate;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
-public class HistoryService extends RxService {
+public class HistoryDbService extends RxService {
 
     private SQLiteDatabase database;
 
-    public HistoryService(SQLiteDatabase database) {
+    public HistoryDbService(SQLiteDatabase database) {
         this.database = database;
     }
 
@@ -63,6 +64,21 @@ public class HistoryService extends RxService {
         }).compose(applySchedulers());
     }
 
+    public Observable<Long> save(Translate translate) {
+        return Observable.fromCallable(() -> {
+            HistoryEntity newEntity = new HistoryEntity(translate.getSource(), translate.getText(), translate.getFrom(), translate.getTo());
+            newEntity.setWordType(translate.getDictArticle().type);
+            newEntity.setSynonims(translate.getDictArticle().synonimStrings);
+            newEntity.setMeans(translate.getDictArticle().meanStrings);
+
+            HistoryEntity saved = getHistoryEntity(translate.getSource());
+            if (saved != null) {
+                newEntity._id = saved._id;
+            }
+            Long savedId = getDatabaseCompartment().put(newEntity);
+            return savedId;
+        }).compose(applySchedulers());
+    }
 
 
     public Observable<List<HistoryEntity>> fetchHistory() {
@@ -78,10 +94,17 @@ public class HistoryService extends RxService {
                 .compose(applySchedulers());
     }
 
-    public Observable<List<HistoryEntity>> fetchSearchBy(String source) {
+    public Observable<List<HistoryEntity>> fetchSearchLike(String source) {
         return Observable.fromCallable(() -> getEntityQuery()
                 .withSelection("source = ?", "LIKE " + source).list())
                 .compose(applySchedulers());
+    }
+
+    public Observable<HistoryEntity> fetchSearchSame(String source) {
+        return Observable.fromCallable(() -> {
+            HistoryEntity historyEntity = getEntityQuery().withSelection("source = ?", source).get();
+            return historyEntity != null ? historyEntity : new HistoryEntity(); // Callable в Rx не может возвращать null, проверяем по _id
+        }).compose(applySchedulers());
     }
 
 

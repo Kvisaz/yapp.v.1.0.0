@@ -21,9 +21,9 @@ import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.common.ConnectivityChecker;
 import ru.kvisaz.yandextranslate.common.RestInterceptor;
 import ru.kvisaz.yandextranslate.data.rest.DictApi;
-import ru.kvisaz.yandextranslate.data.rest.DictService;
+import ru.kvisaz.yandextranslate.data.rest.DictRestService;
 import ru.kvisaz.yandextranslate.data.rest.TranslateApi;
-import ru.kvisaz.yandextranslate.data.rest.TranslateService;
+import ru.kvisaz.yandextranslate.data.rest.TranslateRestService;
 
 @Module
 public class NetworkModule {
@@ -100,25 +100,25 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    TranslateService.IRest providesYandexApiRest(@Named(TRANSLATE_RETROFIT) Retrofit retrofit) {
-        return retrofit.create(TranslateService.IRest.class);
+    TranslateRestService.IRest providesYandexApiRest(@Named(TRANSLATE_RETROFIT) Retrofit retrofit) {
+        return retrofit.create(TranslateRestService.IRest.class);
     }
 
     @Provides
     @Singleton
-    TranslateService providesYandexApiService(TranslateService.IRest rest) {
-        return new TranslateService(rest);
+    TranslateRestService providesYandexApiService(TranslateRestService.IRest rest) {
+        return new TranslateRestService(rest);
     }
 
     @Provides
     @Singleton
-    DictService.IRest providesDictApiRest(@Named(DICT_RETROFIT) Retrofit retrofit) {
-        return retrofit.create(DictService.IRest.class);
+    DictRestService.IRest providesDictApiRest(@Named(DICT_RETROFIT) Retrofit retrofit) {
+        return retrofit.create(DictRestService.IRest.class);
     }
 
     @Provides
     @Singleton
-    DictService providesDictApiService(DictService.IRest rest) {
-        return new DictService(rest);
+    DictRestService providesDictApiService(DictRestService.IRest rest) {
+        return new DictRestService(rest);
     }
 }

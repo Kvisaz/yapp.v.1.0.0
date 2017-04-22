@@ -1,9 +1,12 @@
 package ru.kvisaz.yandextranslate.data.models;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.kvisaz.yandextranslate.common.utils.StringUtils;
+import ru.kvisaz.yandextranslate.data.database.models.HistoryEntity;
 import ru.kvisaz.yandextranslate.data.rest.models.DictDef;
 import ru.kvisaz.yandextranslate.data.rest.models.DictMean;
 import ru.kvisaz.yandextranslate.data.rest.models.DictResponse;
@@ -48,6 +51,14 @@ public class DictArticle {
         }
     }
 
+    public DictArticle(@NonNull HistoryEntity historyEntity) {
+        isEmpty = false;
+        text = historyEntity.source;
+        type = historyEntity.type;
+        synonimStrings.addAll(historyEntity.getSynonims());
+        meanStrings.addAll(historyEntity.getMeans());
+    }
+
 
     private String getSynonims(DictTr translate) {
         if (translate == null) return StringUtils.EMPTY_STRING;
@@ -69,10 +80,16 @@ public class DictArticle {
         }
         StringBuilder sb = new StringBuilder();
 
+        boolean isFirst = true;
         for (DictMean mean : translate.mean) {
-            sb.append(mean.text).append(WORD_DELIMITER);
+            if (!isFirst) {
+                sb.append(WORD_DELIMITER);
+            }
+            if (isFirst) {
+                isFirst = false;
+            }
+            sb.append(mean.text);
         }
-        sb.deleteCharAt(sb.length() - 1);
 
         return sb.toString();
     }

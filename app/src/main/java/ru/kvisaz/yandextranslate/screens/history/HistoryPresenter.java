@@ -8,15 +8,14 @@ import com.arellomobile.mvp.MvpPresenter;
 import javax.inject.Inject;
 
 import ru.kvisaz.yandextranslate.Constants;
-import ru.kvisaz.yandextranslate.data.database.HistoryService;
-import ru.kvisaz.yandextranslate.data.models.SentencePair;
+import ru.kvisaz.yandextranslate.data.database.HistoryDbService;
 import ru.kvisaz.yandextranslate.di.ComponentProvider;
 
 @InjectViewState
 public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHistoryPresenter {
 
     @Inject
-    HistoryService historyService;
+    HistoryDbService historyDbService;
 
     public HistoryPresenter() {
         super();
@@ -25,7 +24,7 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
 
     @Override
     public void onPageVisible() {
-        historyService.fetchHistory()
+        historyDbService.fetchHistory()
                 .subscribe(
                         (entities -> {
                             getViewState().showHistory(entities);
@@ -40,11 +39,6 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
 
     @Override
     public void onFavoritesSelect() {
-
-    }
-
-    @Override
-    public void onItemSelect(SentencePair sentencePair) {
 
     }
 

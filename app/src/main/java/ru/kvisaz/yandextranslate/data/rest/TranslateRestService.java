@@ -16,7 +16,7 @@ import ru.kvisaz.yandextranslate.data.rest.models.LanguageDetectResponse;
 import ru.kvisaz.yandextranslate.data.rest.models.LanguagesResponse;
 import ru.kvisaz.yandextranslate.data.rest.models.TranslateResponse;
 
-public class TranslateService extends RxRestService {
+public class TranslateRestService extends RxRestService {
 
     private static final String DIRS_DELIMITER = Constants.DEFAULT_DIRECTION_DELIMITER;
 
@@ -37,7 +37,7 @@ public class TranslateService extends RxRestService {
     private IRest mApiRestService;
 
     @Inject
-    public TranslateService(IRest apiRestService) {
+    public TranslateRestService(IRest apiRestService) {
         mApiRestService = apiRestService;
     }
 

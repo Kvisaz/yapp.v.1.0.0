@@ -18,7 +18,6 @@ import butterknife.BindView;
 import ru.kvisaz.yandextranslate.R;
 import ru.kvisaz.yandextranslate.common.CommonTabFragment;
 import ru.kvisaz.yandextranslate.data.database.models.HistoryEntity;
-import ru.kvisaz.yandextranslate.data.models.SentencePair;
 
 public class HistoryFraqment extends CommonTabFragment implements IHistoryView {
 
@@ -64,11 +63,6 @@ public class HistoryFraqment extends CommonTabFragment implements IHistoryView {
         historyEntities.clear();
         historyEntities.addAll(entities);
         historyAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void addPage(List<SentencePair> sentencePairs) {
-
     }
 
     @Override

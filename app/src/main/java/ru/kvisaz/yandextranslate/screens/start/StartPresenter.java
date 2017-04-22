@@ -13,7 +13,7 @@ import ru.kvisaz.yandextranslate.common.ConnectivityChecker;
 import ru.kvisaz.yandextranslate.common.LocaleChecker;
 import ru.kvisaz.yandextranslate.data.ActiveSession;
 import ru.kvisaz.yandextranslate.data.UserSettings;
-import ru.kvisaz.yandextranslate.data.rest.TranslateService;
+import ru.kvisaz.yandextranslate.data.rest.TranslateRestService;
 import ru.kvisaz.yandextranslate.data.rest.models.LanguagesResponse;
 import ru.kvisaz.yandextranslate.di.ComponentProvider;
 
@@ -21,7 +21,7 @@ import ru.kvisaz.yandextranslate.di.ComponentProvider;
 public class StartPresenter extends MvpPresenter<IStartView> implements IStartPresenter {
 
     @Inject
-    TranslateService mTranslateService;
+    TranslateRestService mTranslateRestService;
 
     @Inject
     ConnectivityChecker mConnectivityChecker;
@@ -72,7 +72,7 @@ public class StartPresenter extends MvpPresenter<IStartView> implements IStartPr
 
         // задаем минимальное время для показа индикатора
         Observable<Long> timer = Observable.timer(Constants.START_SCREEN_LOADING_MIN_TIME, TimeUnit.SECONDS);
-        Observable<LanguagesResponse> fetchLanguages = mTranslateService
+        Observable<LanguagesResponse> fetchLanguages = mTranslateRestService
                 .fetchLanguages(currentUserLanguageCode) // первый запрос к серверу с кодом ui
                 .flatMap(this::checkLanguageResponse); //  если ui не подошел, делаем второй с дефолтным кодом
 
@@ -97,7 +97,7 @@ public class StartPresenter extends MvpPresenter<IStartView> implements IStartPr
     private Observable<LanguagesResponse> checkLanguageResponse(LanguagesResponse languagesResponse) {
         if (languagesResponse.langs == null) {
             userSettings.setLanguageCode(Constants.DEFAULT_LANGUAGE_CODE);
-            return mTranslateService.fetchLanguages(userSettings.getLanguageCode());
+            return mTranslateRestService.fetchLanguages(userSettings.getLanguageCode());
         } else {
             return Observable.just(languagesResponse);
         }
