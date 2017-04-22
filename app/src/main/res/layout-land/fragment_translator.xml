@@ -234,6 +234,51 @@
             app:srcCompat="@drawable/translate_copy_button"
             android:layout_marginEnd="12dp" />
 
+        <View
+            android:id="@+id/offlineBgView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/colorWhite"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/centerHorGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintGuide_percent="0.5"
+            android:orientation="horizontal" />
+
+        <TextView
+            android:id="@+id/offlineMessageTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
+            android:text="@string/translate_offline_message"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:visibility="gone"
+
+            app:layout_constraintBottom_toBottomOf="@+id/centerHorGuideline"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginBottom="8dp"
+            tools:visibility="visible" />
+
+        <Button
+            android:id="@+id/offlineButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button"
+            app:layout_constraintTop_toBottomOf="@+id/centerHorGuideline"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginTop="4dp"
+            />
+
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

@@ -39,7 +39,7 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
         historyDbService.save(entity)
                 .subscribe(
                         (id -> {
-                            Log.d(Constants.LOG_TAG, "translate for " + entity.source + " favorite = " + entity.isFavorite);
+                            Log.d(Constants.LOG_TAG, "translated for " + entity.source + " favorite = " + entity.isFavorite);
                         })
                         , this::handleThrowable
                 );

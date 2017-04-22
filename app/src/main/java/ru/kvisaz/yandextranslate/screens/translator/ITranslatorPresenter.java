@@ -23,4 +23,6 @@ public interface ITranslatorPresenter {
     void onCopyButtonClick();
 
     void onInputChanged(String input);
+
+    void onOfflineButtonClick();
 }

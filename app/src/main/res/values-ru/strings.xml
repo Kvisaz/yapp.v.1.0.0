@@ -7,6 +7,9 @@
     <string name="start_screen_internet_error_message_content">Доступны для просмотра история и закладки. Для перевода новых фраз необходимо подключиться к Интернету</string>
     <string name="start_screen_internet_ok_button_label">Ок</string>
 
+    <string name="translate_offline_message">Нет подключения к серверу</string>
+    <string name="translate_offline_button">Проверить</string>
+
     <string name="history_mode_history">История</string>
     <string name="history_mode_favorites">Избранное</string>
     <string name="history_search_hint">Найти в истории…</string>

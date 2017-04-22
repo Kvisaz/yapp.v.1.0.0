@@ -81,11 +81,13 @@ public class StartPresenter extends MvpPresenter<IStartView> implements IStartPr
         Observable.zip(fetchLanguages, timer, (languagesResponse, timerValue) -> languagesResponse)
                 .subscribe(
                         languageData -> {
+                            ActiveSession.setIsOnline(true);
                             ActiveSession.saveLanguageData(languageData);
                             getViewState().goToTabActivityScreen();
                         },
 
                         throwable -> {
+                            ActiveSession.setIsOnline(false);
                             getViewState().showErrorScreen("Error", throwable.getMessage());
                         });
     }

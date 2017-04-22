@@ -4,23 +4,34 @@ import ru.kvisaz.yandextranslate.data.database.models.HistoryEntity;
 
 public class Translate {
     public final boolean isNew;
+
+    private boolean mIsFavorite;
     private String mSource;
     private String mTranslate;
     private String mFrom;
     private String mTo;
     private DictArticle mDictArticle;
 
-    public Translate(){
+    public Translate() {
         isNew = true;
     }
 
     public Translate(HistoryEntity historyEntity) {
         isNew = false;
+        mIsFavorite = historyEntity.isFavorite;
         mSource = historyEntity.source;
-        mTranslate = historyEntity.translate;
+        mTranslate = historyEntity.translated;
         mFrom = historyEntity.fromLang;
         mTo = historyEntity.toLang;
         mDictArticle = new DictArticle(historyEntity);
+    }
+
+    public boolean isFavorite() {
+        return mIsFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        mIsFavorite = favorite;
     }
 
     public String getSource() {

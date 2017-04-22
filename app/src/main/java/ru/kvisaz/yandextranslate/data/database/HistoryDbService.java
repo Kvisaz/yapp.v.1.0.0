@@ -50,20 +50,6 @@ public class HistoryDbService extends RxService {
         }).compose(applySchedulers());
     }
 
-    public Observable<Long> save(String sourceText, DictArticle dictArticle) {
-        return Observable.fromCallable(() -> {
-            HistoryEntity saved = getHistoryEntity(sourceText);
-            if (saved == null) {
-                throw new Exception("No HistoryEntity with this source text");
-            } else {
-                saved.setWordType(dictArticle.type);
-                saved.setSynonims(dictArticle.synonimStrings);
-                saved.setMeans(dictArticle.meanStrings);
-            }
-            return getDatabaseCompartment().put(saved);
-        }).compose(applySchedulers());
-    }
-
     public Observable<Long> save(Translate translate) {
         return Observable.fromCallable(() -> {
             HistoryEntity newEntity = new HistoryEntity(translate.getSource(), translate.getText(), translate.getFrom(), translate.getTo());

@@ -1,5 +1,6 @@
 package ru.kvisaz.yandextranslate.screens.translator;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -23,6 +25,7 @@ import ru.kvisaz.yandextranslate.R;
 import ru.kvisaz.yandextranslate.common.CommonTabFragment;
 import ru.kvisaz.yandextranslate.data.models.DictArticle;
 import ru.kvisaz.yandextranslate.data.models.Language;
+import ru.kvisaz.yandextranslate.screens.start.StartActivity;
 import ru.kvisaz.yandextranslate.screens.translator.dict.DictArticleAdapter;
 
 public class TranslatorFragment extends CommonTabFragment implements ITranslatorView {
@@ -54,6 +57,15 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
     @BindView(R.id.translateBookmarkCheckbox)
     CheckBox translateBookmarkCheckbox;
 
+    @BindView(R.id.offlineBgView)
+    View offlineBgView;
+
+    @BindView(R.id.offlineMessageTextView)
+    TextView offlineMessageTextView;
+
+    @BindView(R.id.offlineButton)
+    Button offlineButton;
+
     private ArrayAdapter<Language> sourcesSpinnerAdapter;
     private ArrayAdapter<Language> destLanguagesAdapter;
     private DictArticleAdapter dictArticleAdapter;
@@ -68,6 +80,14 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
         super.onViewCreated(view, savedInstanceState);
         initDictArticleView();
         presenter.onStart();
+    }
+
+    @Override
+    public void showOfflineScreen(boolean visible) {
+        int visibility = visible ? View.VISIBLE : View.GONE;
+        offlineBgView.setVisibility(visibility);
+        offlineMessageTextView.setVisibility(visibility);
+        offlineButton.setVisibility(visibility);
     }
 
     @Override
@@ -107,6 +127,19 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
     @Override
     public void showOriginalText(String original) {
         sourceTextView.setText(original);
+    }
+
+    @Override
+    public void goToStartActivity() {
+        Intent intent = new Intent(getActivity(), StartActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        getActivity().finish();
+    }
+
+    @OnClick(R.id.offlineButton)
+    public void onOfflineClick(View view) {
+        presenter.onOfflineButtonClick();
     }
 
     @OnClick(R.id.switchDirectionsButton)

@@ -64,7 +64,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
         holder.sourceTextView.setText(entity.source);
 
         // translated text
-        holder.translatedTextView.setText(entity.translate);
+        holder.translatedTextView.setText(entity.translated);
 
         // direction
         holder.directionTextView.setText(entity.fromLang + DIRECTION_DELIMITER + entity.toLang);

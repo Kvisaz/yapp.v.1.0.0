@@ -5,6 +5,7 @@ import java.util.List;
 
 import ru.kvisaz.yandextranslate.common.utils.StringUtils;
 import ru.kvisaz.yandextranslate.data.database.DbConstants;
+import ru.kvisaz.yandextranslate.data.models.Translate;
 
 public class HistoryEntity {
     public Long _id;
@@ -12,7 +13,7 @@ public class HistoryEntity {
     public String fromLang; // en
     public String toLang; // ru
     public String source;
-    public String translate;
+    public String translated;
     public String type;
     public String synonimStringsEncoded;
     public String meanStringsEncoded;
@@ -22,19 +23,29 @@ public class HistoryEntity {
         fromLang = "";
         toLang = "";
         source = "";
-        translate = "";
+        translated = "";
         type = "";
         synonimStringsEncoded = "";
         meanStringsEncoded = "";
     }
 
+    public HistoryEntity(Translate translate){
+        isFavorite = translate.isFavorite();
+        fromLang = translate.getFrom();
+        toLang = translate.getTo();
+        source = translate.getSource();
+        translated = translate.getText();
+        type = translate.getDictArticle().type;
+        setSynonims(translate.getDictArticle().synonimStrings);
+        setMeans(translate.getDictArticle().meanStrings);
+    }
 
     public HistoryEntity(String source, String translate, String from, String to) {
         this();
         this.fromLang = from;
         this.toLang = to;
         this.source = source;
-        this.translate = translate;
+        this.translated = translate;
     }
 
     public void copy(HistoryEntity historyEntity) {
@@ -42,7 +53,7 @@ public class HistoryEntity {
         fromLang = historyEntity.fromLang;
         toLang = historyEntity.toLang;
         source = historyEntity.source;
-        translate = historyEntity.translate;
+        translated = historyEntity.translated;
         type = historyEntity.type;
         synonimStringsEncoded = historyEntity.synonimStringsEncoded;
         meanStringsEncoded = historyEntity.meanStringsEncoded;

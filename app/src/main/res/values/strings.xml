@@ -6,6 +6,9 @@
     <string name="start_screen_internet_error_message_content">The history and bookmarks are available for viewing. To translate new phrases, you need to connect to the Internet.</string>
     <string name="start_screen_internet_ok_button_label">Ok</string>
 
+    <string name="translate_offline_message">Sorry, no connection</string>
+    <string name="translate_offline_button">Try to check</string>
+
     <string name="history_mode_history">History</string>
     <string name="history_mode_favorites">Favorites</string>
     <string name="history_search_hint">Find in history…</string>

@@ -76,6 +76,10 @@ public class StartActivity extends MvpAppCompatActivity implements IStartView {
         finish();
     }
 
+
+    /*
+    *   todo bug  java.lang.NullPointerException  если ошибка и нет связи - надо проверять в TranslatorPresenter на null в Active
+    * */
     @OnClick(R.id.okButton)
     public void onOkButtonClick() {
         presenter.onStartButtonClick();

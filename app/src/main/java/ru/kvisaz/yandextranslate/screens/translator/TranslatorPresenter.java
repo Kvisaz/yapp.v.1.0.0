@@ -78,20 +78,28 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
         sourceText = "";
         translatedText = "";
-        languagesInfo = ActiveSession.getLanguages();
-        sourceLangs = languagesInfo.getSourceLanguages();
-        selectedSource = findSelectedSourceLanguage();
-        destLangs = languagesInfo.getDestinations(selectedSource.code);
-        selectedDestination = languagesInfo.getDefaultDestination(selectedSource);
+
+        if (ActiveSession.isOnline()) {
+            languagesInfo = ActiveSession.getLanguages();
+            sourceLangs = languagesInfo.getSourceLanguages();
+            selectedSource = findSelectedSourceLanguage();
+            destLangs = languagesInfo.getDestinations(selectedSource.code);
+            selectedDestination = languagesInfo.getDefaultDestination(selectedSource);
+        }
+
     }
 
     @Override
     public void onStart() {
-        getViewState().setSourceLanguages(sourceLangs);
-        getViewState().selectSourceLanguage(selectedSource);
-        getViewState().setDestinationLanguages(destLangs);
-        if (selectedDestination != null) {
-            getViewState().selectDestinationLanguage(selectedDestination);
+        getViewState().showOfflineScreen(!ActiveSession.isOnline());
+
+        if (ActiveSession.isOnline()) {
+            getViewState().setSourceLanguages(sourceLangs);
+            getViewState().selectSourceLanguage(selectedSource);
+            getViewState().setDestinationLanguages(destLangs);
+            if (selectedDestination != null) {
+                getViewState().selectDestinationLanguage(selectedDestination);
+            }
         }
     }
 
@@ -147,6 +155,11 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
         // (в течение некоторого времени не будет меняться текст)
         fetchTranslateRunnable = this::fetchTranslate;
         handler.postDelayed(fetchTranslateRunnable, Constants.DELAY_BETWEEN_INPUT_CHANGING_MS);
+    }
+
+    @Override
+    public void onOfflineButtonClick() {
+        getViewState().goToStartActivity();
     }
 
     @Override
