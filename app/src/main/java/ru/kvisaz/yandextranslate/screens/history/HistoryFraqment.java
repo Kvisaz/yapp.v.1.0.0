@@ -19,7 +19,7 @@ import ru.kvisaz.yandextranslate.R;
 import ru.kvisaz.yandextranslate.common.CommonTabFragment;
 import ru.kvisaz.yandextranslate.data.database.models.HistoryEntity;
 
-public class HistoryFraqment extends CommonTabFragment implements IHistoryView {
+public class HistoryFraqment extends CommonTabFragment implements IHistoryView, HistoryAdapter.InteractionListener {
 
     @InjectPresenter
     HistoryPresenter presenter;
@@ -70,9 +70,15 @@ public class HistoryFraqment extends CommonTabFragment implements IHistoryView {
 
     }
 
+    @Override
+    public void onFavoriteCheck(HistoryEntity entity) {
+        presenter.onFavoriteCheck(entity);
+    }
+
     private void initRecyclerView() {
         historyEntities = new ArrayList<>();
         historyAdapter = new HistoryAdapter(historyEntities);
+        historyAdapter.setInteractionListener(this);
         historyRecyclerView.setAdapter(historyAdapter);
         historyRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }

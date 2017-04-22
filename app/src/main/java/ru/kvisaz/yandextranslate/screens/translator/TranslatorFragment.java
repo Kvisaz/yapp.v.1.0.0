@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -49,6 +50,9 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
 
     @BindView(R.id.dictRecyclerView)
     RecyclerView dictRecyclerView;
+
+    @BindView(R.id.translateBookmarkCheckbox)
+    CheckBox translateBookmarkCheckbox;
 
     private ArrayAdapter<Language> sourcesSpinnerAdapter;
     private ArrayAdapter<Language> destLanguagesAdapter;

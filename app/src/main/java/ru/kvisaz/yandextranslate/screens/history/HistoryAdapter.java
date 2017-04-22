@@ -1,6 +1,5 @@
 package ru.kvisaz.yandextranslate.screens.history;
 
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,6 +18,16 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
     private static String DIRECTION_DELIMITER = " - ";
 
     private List<HistoryEntity> entities;
+
+    public void setInteractionListener(InteractionListener interactionListener) {
+        this.mInteractionListener = interactionListener;
+    }
+
+    private InteractionListener mInteractionListener;
+
+    public interface InteractionListener {
+        void onFavoriteCheck(HistoryEntity entity);
+    }
 
     public HistoryAdapter() {
         entities = new ArrayList<>();
@@ -42,10 +51,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
         //  delimiter
         holder.delimiterView.setVisibility(mustHaveDelimiter(position) ? View.VISIBLE : View.INVISIBLE);
 
-        // bookmark icon
-        @DrawableRes
-        int bookmarkButtonDrawable = entity.isFavorite ? R.drawable.ic_action_bookmark_selected : R.drawable.ic_action_bookmark_gray;
-        holder.bookmarkButton.setImageResource(bookmarkButtonDrawable);
+        // check bookmark
+        holder.bookmarkCheckBox.setChecked(entity.isFavorite);
+        holder.bookmarkCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(buttonView.isPressed()){ // проверяем, что это пользователь
+                entity.isFavorite = isChecked;
+                mInteractionListener.onFavoriteCheck(entity);
+            }
+        });
 
         // source text
         holder.sourceTextView.setText(entity.source);

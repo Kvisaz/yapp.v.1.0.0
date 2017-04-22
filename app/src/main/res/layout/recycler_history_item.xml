@@ -6,12 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageButton
-        android:id="@+id/historyItemBookmarkButton"
+    <CheckBox
+        android:id="@+id/historyItemBookmarkCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/colorTransparent"
-        app:srcCompat="@drawable/history_bookmark_button"
+        android:button="@drawable/bookmark_checkbox"
         android:layout_marginLeft="0dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
@@ -30,7 +30,7 @@
         android:textColor="@color/colorBlack"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Привет"
-        app:layout_constraintLeft_toRightOf="@+id/historyItemBookmarkButton"
+        app:layout_constraintLeft_toRightOf="@+id/historyItemBookmarkCheckBox"
 
          />
 

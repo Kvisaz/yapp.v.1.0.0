@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.data.database.HistoryDbService;
+import ru.kvisaz.yandextranslate.data.database.models.HistoryEntity;
 import ru.kvisaz.yandextranslate.di.ComponentProvider;
 
 @InjectViewState
@@ -30,6 +31,18 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
                             getViewState().showHistory(entities);
                         })
                         , this::handleThrowable);
+    }
+
+    @Override
+    public void onFavoriteCheck(HistoryEntity entity) {
+        // just update
+        historyDbService.save(entity)
+                .subscribe(
+                        (id -> {
+                            Log.d(Constants.LOG_TAG, "translate for " + entity.source + " favorite = " + entity.isFavorite);
+                        })
+                        , this::handleThrowable
+                );
     }
 
     @Override

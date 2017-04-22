@@ -2,6 +2,7 @@ package ru.kvisaz.yandextranslate.screens.history;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -11,8 +12,8 @@ import ru.kvisaz.yandextranslate.R;
 
 public class HistoryViewHolder extends RecyclerView.ViewHolder {
 
-    @BindView(R.id.historyItemBookmarkButton)
-    ImageButton bookmarkButton;
+    @BindView(R.id.historyItemBookmarkCheckBox)
+    CheckBox bookmarkCheckBox;
 
     @BindView(R.id.historyItemTranslateTextView)
     TextView translatedTextView;
