@@ -2,6 +2,7 @@ package ru.kvisaz.yandextranslate.screens.history;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -64,11 +65,6 @@ public class HistoryFraqment extends CommonTabFragment implements IHistoryView, 
     }
 
     @Override
-    public void setSearchFieldHint(String hint) {
-
-    }
-
-    @Override
     public void onFavoriteCheck(Translate translate) {
         presenter.onFavoriteCheck(translate);
     }
@@ -100,6 +96,7 @@ public class HistoryFraqment extends CommonTabFragment implements IHistoryView, 
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 HistoryTabMode mode = HistoryTabMode.values()[tab.getPosition()];
+                setSearchFieldHint(mode);
                 presenter.onHistoryModeSelect(mode);
             }
 
@@ -111,5 +108,10 @@ public class HistoryFraqment extends CommonTabFragment implements IHistoryView, 
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+    }
+
+    private void setSearchFieldHint(HistoryTabMode mode) {
+        @StringRes int hintRes = mode == HistoryTabMode.HISTORY ? R.string.history_search_hint : R.string.history_search_favorites_hint;
+        historySearchEditText.setHint(hintRes);
     }
 }

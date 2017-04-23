@@ -6,15 +6,11 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
 import java.util.List;
 
-import ru.kvisaz.yandextranslate.data.database.models.HistoryEntity;
 import ru.kvisaz.yandextranslate.data.models.Translate;
 
 public interface IHistoryView extends MvpView {
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showHistory(List<Translate> entities);
-
-    @StateStrategyType(AddToEndSingleStrategy.class)
-    void setSearchFieldHint(String hint);
 
     @StateStrategyType(AddToEndSingleStrategy.class)
     void hideTranslate(Translate translate);

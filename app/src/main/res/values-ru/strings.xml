@@ -13,4 +13,6 @@
     <string name="history_mode_history">История</string>
     <string name="history_mode_favorites">Избранное</string>
     <string name="history_search_hint">Найти в истории…</string>
+    <string name="history_search_favorites_hint">Найти в закладках…</string>
+
 </resources>

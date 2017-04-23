@@ -12,4 +12,6 @@
     <string name="history_mode_history">History</string>
     <string name="history_mode_favorites">Favorites</string>
     <string name="history_search_hint">Find in history…</string>
+    <string name="history_search_favorites_hint">Find in favorites…</string>
+
 </resources>
