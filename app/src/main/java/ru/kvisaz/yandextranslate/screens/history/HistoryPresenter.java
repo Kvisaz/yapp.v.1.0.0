@@ -41,7 +41,10 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
                         (id -> {
                             Log.d(Constants.LOG_TAG, "translated for " + entity.source + " favorite = " + entity.isFavorite);
                         })
-                        , this::handleThrowable
+                        , throwable -> {
+                            // todo тут надо отменить выделение кнопки - ведь не сохранилось
+                            handleThrowable(throwable);
+                        }
                 );
     }
 
