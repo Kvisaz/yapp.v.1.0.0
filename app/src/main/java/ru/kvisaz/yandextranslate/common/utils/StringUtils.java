@@ -18,4 +18,10 @@ public class StringUtils {
         sb.delete(sb.length() - delimiter.length(), sb.length());
         return sb.toString();
     }
+    /*
+    *    remove whitespaces, multiple \n
+    * */
+    public static String cleanInput(String text){
+        return text.trim().replaceAll("[\n]{2,}", "\n");
+    }
 }

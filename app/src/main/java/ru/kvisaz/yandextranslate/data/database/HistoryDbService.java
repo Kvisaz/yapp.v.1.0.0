@@ -1,6 +1,7 @@
 package ru.kvisaz.yandextranslate.data.database;
 
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,20 +47,19 @@ public class HistoryDbService extends RxService {
         DatabaseCompartment.QueryBuilder<HistoryEntity> queryBuilder;
         queryBuilder = favoritesOnly ? getFavoritesQueryBuilder() : getHistoryQueryBuilder();
 
-        return Observable.fromCallable(() -> queryBuilder.list())
-                .map(entities -> {
-                    List<Translate> translateList = new ArrayList<>();
-                    for (HistoryEntity entity : entities) {
-                        translateList.add(new Translate(entity));
-                    }
-                    return translateList;
-                })
+        return Observable.fromCallable(queryBuilder::list)
+                .map(this::getTranslates)
                 .compose(applySchedulers());
     }
 
-    public Observable<List<HistoryEntity>> fetchSearchLike(String source) {
-        return Observable.fromCallable(() -> getEntityQuery()
-                .withSelection("source LIKE ?", " " + source).list())
+
+    public Observable<List<Translate>> fetchSearchLike(String source, boolean favoritesOnly) {
+        DatabaseCompartment.QueryBuilder<HistoryEntity> queryBuilder;
+        queryBuilder = favoritesOnly ? getFavoritesQueryBuilder() : getHistoryQueryBuilder();
+
+        return Observable.fromCallable(() -> queryBuilder
+                .withSelection("source LIKE ?", source + "%").list())
+                .map(this::getTranslates)
                 .compose(applySchedulers());
     }
 
@@ -102,5 +102,14 @@ public class HistoryDbService extends RxService {
 
     private DatabaseCompartment.QueryBuilder<HistoryEntity> getFavoritesQueryBuilder() {
         return getHistoryQueryBuilder().withSelection("isFavorite = ?", "1");
+    }
+
+    @NonNull
+    private List<Translate> getTranslates(List<HistoryEntity> entities) {
+        List<Translate> translateList = new ArrayList<>();
+        for (HistoryEntity entity : entities) {
+            translateList.add(new Translate(entity));
+        }
+        return translateList;
     }
 }

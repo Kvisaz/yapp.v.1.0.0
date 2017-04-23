@@ -1,5 +1,6 @@
 package ru.kvisaz.yandextranslate.screens.history;
 
+import android.os.Handler;
 import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
@@ -11,6 +12,7 @@ import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import ru.kvisaz.yandextranslate.Constants;
+import ru.kvisaz.yandextranslate.common.utils.StringUtils;
 import ru.kvisaz.yandextranslate.data.database.HistoryDbService;
 import ru.kvisaz.yandextranslate.data.models.Translate;
 import ru.kvisaz.yandextranslate.di.ComponentProvider;
@@ -21,7 +23,12 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
     @Inject
     HistoryDbService historyDbService;
 
+    @Inject
+    Handler handler;
+
+    private Runnable fetchSearchRunnable;
     private HistoryTabMode historyMode = HistoryTabMode.HISTORY;
+    private String searchString;
 
     public HistoryPresenter() {
         super();
@@ -32,10 +39,8 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
     public void onPageVisible() {
         historyDbService.fetchHistoryList(false)
                 .subscribe(
-                        (entities -> {
-                            getViewState().showHistory(entities);
-                        })
-                        , this::handleServerError);
+                        translates -> getViewState().showHistory(translates),
+                        this::handleServerError);
     }
 
     @Override
@@ -67,11 +72,8 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
         }
 
         historyObservable.subscribe(
-                (entities -> {
-                    getViewState().showHistory(entities);
-                })
-                , this::handleServerError);
-
+                entities -> getViewState().showHistory(entities),
+                this::handleServerError);
 
     }
 
@@ -80,15 +82,35 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
         if (translatesForRemoving.size() == 0) return;
         historyDbService.delete(translatesForRemoving)
                 .subscribe(
-                        (number -> {
-                            getViewState().hideTranslate(translatesForRemoving);
-                        })
-                        , this::handleServerError);
+                        number -> getViewState().hideTranslate(translatesForRemoving),
+                        this::handleServerError);
     }
 
     @Override
     public void onSearchFieldChange(String searchText) {
+        String cleanedInput = StringUtils.cleanInput(searchText);
 
+        // если редактирование продолжается, отменяем заказ на поиск, отправляем только когда набор закончился
+        handler.removeCallbacks(fetchSearchRunnable);
+
+        searchString = cleanedInput;
+
+        // заказываем запрос на поиск, который исполнится, если набор закончен
+        // (в течение некоторого времени не будет меняться текст)
+        fetchSearchRunnable = this::fetchSearch;
+        handler.postDelayed(fetchSearchRunnable, Constants.DELAY_SEARCH_DB_CHANGING_MS);
+    }
+
+    private void fetchSearch() {
+        Observable<List<Translate>> listObservable;
+        boolean emptySearch = searchString.length() == 0;
+        boolean isFavoriteMode = historyMode == HistoryTabMode.FAVORITES;
+        listObservable = emptySearch ? historyDbService.fetchHistoryList(isFavoriteMode) : historyDbService.fetchSearchLike(searchString, isFavoriteMode);
+
+        listObservable.subscribe(
+                translates -> getViewState().showHistory(translates),
+                this::handleServerError
+        );
     }
 
     private void handleServerError(Throwable throwable) {

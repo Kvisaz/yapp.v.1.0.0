@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.common.LocaleChecker;
+import ru.kvisaz.yandextranslate.common.utils.StringUtils;
 import ru.kvisaz.yandextranslate.data.ActiveSession;
 import ru.kvisaz.yandextranslate.data.TranslateRepository;
 import ru.kvisaz.yandextranslate.data.UserSettings;
@@ -142,14 +143,14 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
     @Override
     public void onInputChanged(String input) {
         // чистим от пробелов и лишних переводов
-        String cleanedInput = cleanInput(input);
+        String cleanedInput = StringUtils.cleanInput(input);
         if (sourceText.equals(cleanedInput)) return;
-
-        // если редактирование продолжается, отменяем заказ на запрос к серверу, отправляем только когда набор закончился
-        handler.removeCallbacks(fetchTranslateRunnable);
 
         // не обрабатываем пустые запросы
         if (cleanedInput.length() < Constants.MINIMAL_WORD_LENGTH) return;
+
+        // если редактирование продолжается, отменяем заказ на запрос к серверу, отправляем только когда набор закончился
+        handler.removeCallbacks(fetchTranslateRunnable);
 
         // обновляем поле
         sourceText = cleanedInput;
@@ -203,10 +204,6 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
     @Override
     public void onCopyButtonClick() {
 
-    }
-
-    private String cleanInput(String text) {
-        return text.trim().replaceAll("[\n]{2,}", "\n");
     }
 
     private void fetchTranslate() {

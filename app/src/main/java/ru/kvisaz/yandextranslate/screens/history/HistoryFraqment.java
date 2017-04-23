@@ -6,6 +6,7 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import ru.kvisaz.yandextranslate.R;
 import ru.kvisaz.yandextranslate.common.CommonTabFragment;
 import ru.kvisaz.yandextranslate.data.models.Translate;
@@ -82,6 +84,11 @@ public class HistoryFraqment extends CommonTabFragment implements IHistoryView, 
     @OnClick(R.id.historyDeleteButton)
     public void onDeleteClick() {
         presenter.onDeleteButtonClick(historyAdapter.getSelected());
+    }
+
+    @OnTextChanged(R.id.historySearchEditText)
+    public void onInputChange(Editable editable) {
+        presenter.onSearchFieldChange(editable.toString());
     }
 
     private void initRecyclerView() {
