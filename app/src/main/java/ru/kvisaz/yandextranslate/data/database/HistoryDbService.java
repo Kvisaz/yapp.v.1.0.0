@@ -54,11 +54,11 @@ public class HistoryDbService extends RxService {
 
 
     public Observable<List<Translate>> fetchSearchLike(String source, boolean favoritesOnly) {
-        DatabaseCompartment.QueryBuilder<HistoryEntity> queryBuilder;
-        queryBuilder = favoritesOnly ? getFavoritesQueryBuilder() : getHistoryQueryBuilder();
+        DatabaseCompartment.QueryBuilder<HistoryEntity> qb = getHistoryQueryBuilder();
+        final DatabaseCompartment.QueryBuilder<HistoryEntity> qb2 = favoritesOnly ? qb.withSelection("source LIKE ? AND isFavorite = ?", source + "%", "1")
+                : getHistoryQueryBuilder().withSelection("source LIKE ?", source + "%");
 
-        return Observable.fromCallable(() -> queryBuilder
-                .withSelection("source LIKE ?", source + "%").list())
+        return Observable.fromCallable(() -> qb2.list())
                 .map(this::getTranslates)
                 .compose(applySchedulers());
     }

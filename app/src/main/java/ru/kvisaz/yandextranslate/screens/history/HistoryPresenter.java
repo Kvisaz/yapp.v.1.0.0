@@ -28,7 +28,7 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
 
     private Runnable fetchSearchRunnable;
     private HistoryTabMode historyMode = HistoryTabMode.HISTORY;
-    private String searchString;
+    private String searchString = "";
 
     public HistoryPresenter() {
         super();
@@ -37,10 +37,7 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
 
     @Override
     public void onPageVisible() {
-        historyDbService.fetchHistoryList(false)
-                .subscribe(
-                        translates -> getViewState().showHistory(translates),
-                        this::handleServerError);
+        fetchSearch();
     }
 
     @Override
@@ -63,18 +60,8 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
 
     @Override
     public void onHistoryModeSelect(HistoryTabMode mode) {
-        Observable<List<Translate>> historyObservable;
         historyMode = mode;
-        if (mode == HistoryTabMode.HISTORY) {
-            historyObservable = historyDbService.fetchHistoryList();
-        } else {
-            historyObservable = historyDbService.fetchFavorites();
-        }
-
-        historyObservable.subscribe(
-                entities -> getViewState().showHistory(entities),
-                this::handleServerError);
-
+        fetchSearch();
     }
 
     @Override

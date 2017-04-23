@@ -66,7 +66,7 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
      /*
         *   TODO 1 IndexOutOfBoundsException: Invalid index 1, size is 1  при чтении слова Печень
         *   TODO 2  Сохранение запроса в базу данных после получения в Репозитории
-        *   TODO 3
+        *   TODO 3  при смене языка в списке - повторять текущий запрос если есть
         *
     * */
 
