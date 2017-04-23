@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.kvisaz.yandextranslate.R;
-import ru.kvisaz.yandextranslate.data.database.models.HistoryEntity;
+import ru.kvisaz.yandextranslate.data.models.Translate;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
 
     private static int POSITION_WITH_DELIMITER_VIEW = 3;
     private static String DIRECTION_DELIMITER = " - ";
 
-    private List<HistoryEntity> entities;
+    private List<Translate> translates;
 
     public void setInteractionListener(InteractionListener interactionListener) {
         this.mInteractionListener = interactionListener;
@@ -26,16 +26,19 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
     private InteractionListener mInteractionListener;
 
     public interface InteractionListener {
-        void onFavoriteCheck(HistoryEntity entity);
+        void onFavoriteCheck(Translate translate);
+    }
+
+    public void setData(List<Translate> data) {
+        translates.clear();
+        translates.addAll(data);
+        notifyDataSetChanged();
     }
 
     public HistoryAdapter() {
-        entities = new ArrayList<>();
+        translates = new ArrayList<>();
     }
 
-    public HistoryAdapter(@NonNull List<HistoryEntity> entities) {
-        this.entities = entities;
-    }
 
     @Override
     public HistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -46,33 +49,33 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
 
     @Override
     public void onBindViewHolder(HistoryViewHolder holder, int position) {
-        HistoryEntity entity = entities.get(position);
+        Translate translate = translates.get(position);
 
         //  delimiter
         holder.delimiterView.setVisibility(mustHaveDelimiter(position) ? View.VISIBLE : View.INVISIBLE);
 
         // check bookmark
-        holder.bookmarkCheckBox.setChecked(entity.isFavorite);
+        holder.bookmarkCheckBox.setChecked(translate.isFavorite());
         holder.bookmarkCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(buttonView.isPressed()){ // проверяем, что это пользователь
-                entity.isFavorite = isChecked;
-                mInteractionListener.onFavoriteCheck(entity);
+            if (buttonView.isPressed()) { // проверяем, что это пользователь
+                translate.setFavorite(isChecked);
+                mInteractionListener.onFavoriteCheck(translate);
             }
         });
 
         // source text
-        holder.sourceTextView.setText(entity.source);
+        holder.sourceTextView.setText(translate.getSource());
 
         // translated text
-        holder.translatedTextView.setText(entity.translated);
+        holder.translatedTextView.setText(translate.getText());
 
         // direction
-        holder.directionTextView.setText(entity.fromLang + DIRECTION_DELIMITER + entity.toLang);
+        holder.directionTextView.setText(translate.getFrom() + DIRECTION_DELIMITER + translate.getTo());
     }
 
     @Override
     public int getItemCount() {
-        return entities.size();
+        return translates.size();
     }
 
     private boolean mustHaveDelimiter(int position) {

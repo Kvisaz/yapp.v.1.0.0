@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.data.database.HistoryDbService;
 import ru.kvisaz.yandextranslate.data.database.models.HistoryEntity;
+import ru.kvisaz.yandextranslate.data.models.Translate;
 import ru.kvisaz.yandextranslate.di.ComponentProvider;
 
 @InjectViewState
@@ -34,12 +35,12 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
     }
 
     @Override
-    public void onFavoriteCheck(HistoryEntity entity) {
+    public void onFavoriteCheck(Translate translate) {
         // just update
-        historyDbService.save(entity)
+        historyDbService.save(translate)
                 .subscribe(
                         (id -> {
-                            Log.d(Constants.LOG_TAG, "translated for " + entity.source + " favorite = " + entity.isFavorite);
+                            Log.d(Constants.LOG_TAG, "translated for " + translate.getSource() + " favorite = " + translate.isFavorite());
                         })
                         , throwable -> {
                             // todo тут надо отменить выделение кнопки - ведь не сохранилось

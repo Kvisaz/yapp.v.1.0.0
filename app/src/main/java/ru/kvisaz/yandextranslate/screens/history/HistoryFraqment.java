@@ -11,13 +11,12 @@ import android.widget.ImageButton;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import ru.kvisaz.yandextranslate.R;
 import ru.kvisaz.yandextranslate.common.CommonTabFragment;
-import ru.kvisaz.yandextranslate.data.database.models.HistoryEntity;
+import ru.kvisaz.yandextranslate.data.models.Translate;
 
 public class HistoryFraqment extends CommonTabFragment implements IHistoryView, HistoryAdapter.InteractionListener {
 
@@ -40,7 +39,6 @@ public class HistoryFraqment extends CommonTabFragment implements IHistoryView, 
     ImageButton historySearchButton;
 
     private HistoryAdapter historyAdapter;
-    private List<HistoryEntity> historyEntities;
 
     @Override
     protected int getLayoutResource() {
@@ -59,10 +57,8 @@ public class HistoryFraqment extends CommonTabFragment implements IHistoryView, 
     }
 
     @Override
-    public void showHistory(List<HistoryEntity> entities) {
-        historyEntities.clear();
-        historyEntities.addAll(entities);
-        historyAdapter.notifyDataSetChanged();
+    public void showHistory(List<Translate> translates) {
+        historyAdapter.setData(translates);
     }
 
     @Override
@@ -71,17 +67,15 @@ public class HistoryFraqment extends CommonTabFragment implements IHistoryView, 
     }
 
     @Override
-    public void onFavoriteCheck(HistoryEntity entity) {
-        presenter.onFavoriteCheck(entity);
+    public void onFavoriteCheck(Translate translate) {
+        presenter.onFavoriteCheck(translate);
     }
 
     private void initRecyclerView() {
-        historyEntities = new ArrayList<>();
-        historyAdapter = new HistoryAdapter(historyEntities);
+        historyAdapter = new HistoryAdapter();
         historyAdapter.setInteractionListener(this);
         historyRecyclerView.setAdapter(historyAdapter);
         historyRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
-
 
 }
