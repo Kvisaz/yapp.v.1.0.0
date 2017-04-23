@@ -65,7 +65,7 @@
         app:sslv_duration="150"
         app:sslv_gap="2dp"
         app:sslv_square_length="16dp"
-        app:sslv_start="true"
+        app:sslv_start="false"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintTop_creator="1"

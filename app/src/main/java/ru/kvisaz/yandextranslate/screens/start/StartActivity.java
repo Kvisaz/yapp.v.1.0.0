@@ -38,14 +38,9 @@ public class StartActivity extends MvpAppCompatActivity implements IStartView {
         setContentView(R.layout.activity_start);
 
         ButterKnife.bind(this);
+        loaderView.start();
 
         presenter.onActivityCreate();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        loaderView.stop(); // если не остановить анимацию, работающий ViewAnimator вызовет утечку
     }
 
     @Override
@@ -70,6 +65,8 @@ public class StartActivity extends MvpAppCompatActivity implements IStartView {
 
     @Override
     public void goToTabActivityScreen() {
+        loaderView.stop(); // если не остановить анимацию, работающий ViewAnimator вызовет утечку
+
         Intent intent = new Intent(this, TabActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

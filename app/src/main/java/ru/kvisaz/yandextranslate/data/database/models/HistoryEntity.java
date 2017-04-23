@@ -2,6 +2,7 @@ package ru.kvisaz.yandextranslate.data.database.models;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import ru.kvisaz.yandextranslate.common.utils.StringUtils;
 import ru.kvisaz.yandextranslate.data.database.DbConstants;
@@ -13,6 +14,7 @@ public class HistoryEntity {
     public String fromLang; // en
     public String toLang; // ru
     public String source;
+    public String sourceLowCase; // SQLite не позволяет сделать выборку на кириллице, игнорируя case, так что придется для поиска держать унифицированный вариант
     public String translated;
     public String type;
     public String synonimStringsEncoded;
@@ -23,6 +25,7 @@ public class HistoryEntity {
         fromLang = "";
         toLang = "";
         source = "";
+        sourceLowCase = "";
         translated = "";
         type = "";
         synonimStringsEncoded = "";
@@ -34,6 +37,7 @@ public class HistoryEntity {
         fromLang = translate.getFrom();
         toLang = translate.getTo();
         source = translate.getSource();
+        sourceLowCase = source.toLowerCase(Locale.getDefault());
         translated = translate.getText();
         type = translate.getDictArticle().type;
         setSynonims(translate.getDictArticle().synonimStrings);
@@ -45,6 +49,7 @@ public class HistoryEntity {
         this.fromLang = from;
         this.toLang = to;
         this.source = source;
+        sourceLowCase = source.toLowerCase(Locale.getDefault());
         this.translated = translate;
     }
 
@@ -53,6 +58,7 @@ public class HistoryEntity {
         fromLang = historyEntity.fromLang;
         toLang = historyEntity.toLang;
         source = historyEntity.source;
+        sourceLowCase = source.toLowerCase(Locale.getDefault());
         translated = historyEntity.translated;
         type = historyEntity.type;
         synonimStringsEncoded = historyEntity.synonimStringsEncoded;

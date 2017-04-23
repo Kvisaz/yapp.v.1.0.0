@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.common.ConnectivityChecker;
 import ru.kvisaz.yandextranslate.common.LocaleChecker;
@@ -79,6 +81,8 @@ public class StartPresenter extends MvpPresenter<IStartView> implements IStartPr
         // группируем таймер и запрос к серверу - результат будет только когда отработают оба observable,
         // то есть будет минимальное время показа стартового экрана
         Observable.zip(fetchLanguages, timer, (languagesResponse, timerValue) -> languagesResponse)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         languageData -> {
                             ActiveSession.setIsOnline(true);

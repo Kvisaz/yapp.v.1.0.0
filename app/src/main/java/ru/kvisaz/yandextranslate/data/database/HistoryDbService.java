@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import io.reactivex.Observable;
 import nl.qbusict.cupboard.DatabaseCompartment;
@@ -55,8 +56,9 @@ public class HistoryDbService extends RxService {
 
     public Observable<List<Translate>> fetchSearchLike(String source, boolean favoritesOnly) {
         DatabaseCompartment.QueryBuilder<HistoryEntity> qb = getHistoryQueryBuilder();
-        final DatabaseCompartment.QueryBuilder<HistoryEntity> qb2 = favoritesOnly ? qb.withSelection("source LIKE ? AND isFavorite = ?", source + "%", "1")
-                : getHistoryQueryBuilder().withSelection("source LIKE ?", source + "%");
+        String sourceLowCase = source.toLowerCase(Locale.getDefault()); // SQLite не позволяет case-insensitive для кириллицы
+        final DatabaseCompartment.QueryBuilder<HistoryEntity> qb2 = favoritesOnly ? qb.withSelection("sourceLowCase LIKE ? AND isFavorite = ?", sourceLowCase + "%", "1")
+                : getHistoryQueryBuilder().withSelection("sourceLowCase LIKE ?", sourceLowCase + "%");
 
         return Observable.fromCallable(() -> qb2.list())
                 .map(this::getTranslates)

@@ -94,6 +94,7 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
     }
 
     @Override
+
     public void onStart() {
         getViewState().showOfflineScreen(!ActiveSession.isOnline());
 
