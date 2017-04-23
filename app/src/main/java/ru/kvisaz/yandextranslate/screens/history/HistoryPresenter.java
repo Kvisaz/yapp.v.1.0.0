@@ -21,6 +21,8 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
     @Inject
     HistoryDbService historyDbService;
 
+    private HistoryTabMode historyMode = HistoryTabMode.HISTORY;
+
     public HistoryPresenter() {
         super();
         ComponentProvider.getDataComponent().inject(this);
@@ -42,6 +44,9 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
         historyDbService.save(translate)
                 .subscribe(
                         (id -> {
+                            if(historyMode == HistoryTabMode.FAVORITES && !translate.isFavorite()){
+                                getViewState().hideTranslate(translate);
+                            }
                             Log.d(Constants.LOG_TAG, "translated for " + translate.getSource() + " favorite = " + translate.isFavorite());
                         })
                         , throwable -> {
@@ -54,6 +59,7 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
     @Override
     public void onHistoryModeSelect(HistoryTabMode mode) {
         Observable<List<Translate>> historyObservable;
+        historyMode = mode;
         if (mode == HistoryTabMode.HISTORY) {
             historyObservable = historyDbService.fetchHistoryList();
         } else {

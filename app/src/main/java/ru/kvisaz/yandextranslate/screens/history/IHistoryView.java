@@ -15,4 +15,7 @@ public interface IHistoryView extends MvpView {
 
     @StateStrategyType(AddToEndSingleStrategy.class)
     void setSearchFieldHint(String hint);
+
+    @StateStrategyType(AddToEndSingleStrategy.class)
+    void hideTranslate(Translate translate);
 }

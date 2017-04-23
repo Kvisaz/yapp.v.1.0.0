@@ -72,6 +72,11 @@ public class HistoryFraqment extends CommonTabFragment implements IHistoryView, 
         presenter.onFavoriteCheck(translate);
     }
 
+    @Override
+    public void hideTranslate(Translate translate) {
+        historyAdapter.remove(translate);
+    }
+
     private void initRecyclerView() {
         historyAdapter = new HistoryAdapter();
         historyAdapter.setInteractionListener(this);
@@ -88,10 +93,12 @@ public class HistoryFraqment extends CommonTabFragment implements IHistoryView, 
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {}
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {}
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
         });
     }
 }

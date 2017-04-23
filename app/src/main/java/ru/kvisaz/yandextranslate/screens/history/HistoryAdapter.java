@@ -1,6 +1,5 @@
 package ru.kvisaz.yandextranslate.screens.history;
 
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +16,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
     private static int POSITION_WITH_DELIMITER_VIEW = 3;
     private static String DIRECTION_DELIMITER = " - ";
 
-    private List<Translate> translates;
+    private List<Translate> mData;
 
     public void setInteractionListener(InteractionListener interactionListener) {
         this.mInteractionListener = interactionListener;
@@ -30,13 +29,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
     }
 
     public void setData(List<Translate> data) {
-        translates.clear();
-        translates.addAll(data);
+        mData.clear();
+        mData.addAll(data);
         notifyDataSetChanged();
     }
 
     public HistoryAdapter() {
-        translates = new ArrayList<>();
+        mData = new ArrayList<>();
     }
 
 
@@ -49,7 +48,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
 
     @Override
     public void onBindViewHolder(HistoryViewHolder holder, int position) {
-        Translate translate = translates.get(position);
+        Translate translate = mData.get(position);
 
         //  delimiter
         holder.delimiterView.setVisibility(mustHaveDelimiter(position) ? View.VISIBLE : View.INVISIBLE);
@@ -75,7 +74,20 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
 
     @Override
     public int getItemCount() {
-        return translates.size();
+        return mData.size();
+    }
+
+    public void remove(Translate translate) {
+        int position = mData.indexOf(translate);
+        if (position >= 0) {
+            removeAt(position);
+        }
+    }
+
+    public void removeAt(int position) {
+        mData.remove(position);
+        notifyItemRemoved(position);
+        notifyItemRangeChanged(position, mData.size());
     }
 
     private boolean mustHaveDelimiter(int position) {
