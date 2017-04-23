@@ -44,7 +44,7 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
         historyDbService.save(translate)
                 .subscribe(
                         (id -> {
-                            if(historyMode == HistoryTabMode.FAVORITES && !translate.isFavorite()){
+                            if (historyMode == HistoryTabMode.FAVORITES && !translate.isFavorite()) {
                                 getViewState().hideTranslate(translate);
                             }
                             Log.d(Constants.LOG_TAG, "translated for " + translate.getSource() + " favorite = " + translate.isFavorite());
@@ -76,8 +76,14 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
     }
 
     @Override
-    public void onDeleteButtonClick() {
-
+    public void onDeleteButtonClick(List<Translate> translatesForRemoving) {
+        if (translatesForRemoving.size() == 0) return;
+        historyDbService.delete(translatesForRemoving)
+                .subscribe(
+                        (number -> {
+                            getViewState().hideTranslate(translatesForRemoving);
+                        })
+                        , this::handleServerError);
     }
 
     @Override

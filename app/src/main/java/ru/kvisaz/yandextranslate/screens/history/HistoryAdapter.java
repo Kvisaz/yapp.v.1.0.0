@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import ru.kvisaz.yandextranslate.R;
@@ -74,19 +75,18 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
         // direction
         holder.directionTextView.setText(translate.getFrom() + DIRECTION_DELIMITER + translate.getTo());
 
+        // by default itemView is non-marked
+        holder.setMarked(false);
+
         // selection by long click
         View itemView = holder.itemView;
         itemView.setOnLongClickListener(v -> {
             if (selectedItems.contains(translate)) {
                 selectedItems.remove(translate);
-                holder.markImageView.setVisibility(View.GONE);
-                holder.directionTextView.setVisibility(View.VISIBLE);
-                itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.colorTransparent));
+                holder.setMarked(false);
             } else {
                 selectedItems.add(translate);
-                holder.markImageView.setVisibility(View.VISIBLE);
-                holder.directionTextView.setVisibility(View.GONE);
-                itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.colorLightLightGray));
+                holder.setMarked(true);
             }
             return true;
         });
@@ -99,7 +99,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
     }
 
     public void remove(List<Translate> dataForRemoving) {
-        for (Translate currentTranslate : mData) {
+        Iterator<Translate> itr = dataForRemoving.iterator();
+        while (itr.hasNext()) {
+            Translate currentTranslate = itr.next();
             if (dataForRemoving.contains(currentTranslate)) {
                 mData.remove(currentTranslate);
             }

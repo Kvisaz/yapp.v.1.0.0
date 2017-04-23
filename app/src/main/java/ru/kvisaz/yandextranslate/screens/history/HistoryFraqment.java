@@ -14,6 +14,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import ru.kvisaz.yandextranslate.R;
 import ru.kvisaz.yandextranslate.common.CommonTabFragment;
 import ru.kvisaz.yandextranslate.data.models.Translate;
@@ -75,6 +76,16 @@ public class HistoryFraqment extends CommonTabFragment implements IHistoryView, 
     @Override
     public void hideTranslate(Translate translate) {
         historyAdapter.remove(translate);
+    }
+
+    @Override
+    public void hideTranslate(List<Translate> translates) {
+        historyAdapter.remove(translates);
+    }
+
+    @OnClick(R.id.historyDeleteButton)
+    public void onDeleteClick() {
+        presenter.onDeleteButtonClick(historyAdapter.getSelected());
     }
 
     private void initRecyclerView() {

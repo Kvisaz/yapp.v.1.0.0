@@ -33,18 +33,18 @@ public class HistoryDbService extends RxService {
         }).compose(applySchedulers());
     }
 
-    public Observable<List<Translate>> fetchHistoryList(){
+    public Observable<List<Translate>> fetchHistoryList() {
         return fetchHistoryList(false);
     }
 
-    public Observable<List<Translate>> fetchFavorites(){
+    public Observable<List<Translate>> fetchFavorites() {
         return fetchHistoryList(true);
     }
 
     public Observable<List<Translate>> fetchHistoryList(boolean favoritesOnly) {
 
         DatabaseCompartment.QueryBuilder<HistoryEntity> queryBuilder;
-        queryBuilder = favoritesOnly? getFavoritesQueryBuilder() : getHistoryQueryBuilder();
+        queryBuilder = favoritesOnly ? getFavoritesQueryBuilder() : getHistoryQueryBuilder();
 
         return Observable.fromCallable(() -> queryBuilder.list())
                 .map(entities -> {
@@ -67,6 +67,19 @@ public class HistoryDbService extends RxService {
         return Observable.fromCallable(() -> {
             HistoryEntity historyEntity = getEntityQuery().withSelection("source = ?", source).get();
             return historyEntity != null ? historyEntity : new HistoryEntity(); // Callable в Rx не может возвращать null, проверяем по _id
+        }).compose(applySchedulers());
+    }
+
+    public Observable<Integer> delete(List<Translate> translatesForRemoving) {
+        return Observable.fromCallable(() -> {
+            StringBuilder sb = new StringBuilder("(");
+            for (Translate translate : translatesForRemoving) {
+                sb.append("'").append(translate.getSource()).append("'").append(",");
+            }
+            sb.deleteCharAt(sb.length() - 1); // remove last
+            sb.append(")");
+            String str = sb.toString();
+            return getDatabaseCompartment().delete(HistoryEntity.class, "source IN " + str);
         }).compose(applySchedulers());
     }
 

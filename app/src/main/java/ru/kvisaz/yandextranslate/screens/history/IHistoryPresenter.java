@@ -1,6 +1,7 @@
 package ru.kvisaz.yandextranslate.screens.history;
 
-import ru.kvisaz.yandextranslate.data.database.models.HistoryEntity;
+import java.util.List;
+
 import ru.kvisaz.yandextranslate.data.models.Translate;
 
 public interface IHistoryPresenter {
@@ -11,7 +12,7 @@ public interface IHistoryPresenter {
 
     void onHistoryModeSelect(HistoryTabMode mode);
 
-    void onDeleteButtonClick();
+    void onDeleteButtonClick(List<Translate> translatesForRemoving);
 
     void onSearchFieldChange(String searchText);
 }
