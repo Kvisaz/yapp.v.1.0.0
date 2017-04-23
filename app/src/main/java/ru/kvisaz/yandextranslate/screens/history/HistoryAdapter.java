@@ -1,5 +1,6 @@
 package ru.kvisaz.yandextranslate.screens.history;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
     private static String DIRECTION_DELIMITER = " - ";
 
     private List<Translate> mData;
+    private List<Translate> selectedItems;
 
     public void setInteractionListener(InteractionListener interactionListener) {
         this.mInteractionListener = interactionListener;
@@ -36,6 +38,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
 
     public HistoryAdapter() {
         mData = new ArrayList<>();
+        selectedItems = new ArrayList<>();
     }
 
 
@@ -70,11 +73,38 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
 
         // direction
         holder.directionTextView.setText(translate.getFrom() + DIRECTION_DELIMITER + translate.getTo());
+
+        // selection by long click
+        View itemView = holder.itemView;
+        itemView.setOnLongClickListener(v -> {
+            if (selectedItems.contains(translate)) {
+                selectedItems.remove(translate);
+                holder.markImageView.setVisibility(View.GONE);
+                holder.directionTextView.setVisibility(View.VISIBLE);
+                itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.colorTransparent));
+            } else {
+                selectedItems.add(translate);
+                holder.markImageView.setVisibility(View.VISIBLE);
+                holder.directionTextView.setVisibility(View.GONE);
+                itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.colorLightLightGray));
+            }
+            return true;
+        });
+
     }
 
     @Override
     public int getItemCount() {
         return mData.size();
+    }
+
+    public void remove(List<Translate> dataForRemoving) {
+        for (Translate currentTranslate : mData) {
+            if (dataForRemoving.contains(currentTranslate)) {
+                mData.remove(currentTranslate);
+            }
+        }
+        notifyDataSetChanged();
     }
 
     public void remove(Translate translate) {
@@ -89,6 +119,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, mData.size());
     }
+
+    public List<Translate> getSelected() {
+        return selectedItems;
+    }
+
 
     private boolean mustHaveDelimiter(int position) {
         return position != 0 && (position - 1) % POSITION_WITH_DELIMITER_VIEW == 0;

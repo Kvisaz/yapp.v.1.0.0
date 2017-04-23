@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:background="@color/colorTransparent"
         android:button="@drawable/bookmark_checkbox"
-        android:layout_marginLeft="0dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -68,7 +68,21 @@
         app:layout_constraintBottom_toBottomOf="@+id/historyItemTranslateTextView"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/historyItemSourceTextView"
-        tools:text="en-ru" />
+        tools:text="en-ru"
+        app:layout_constraintVertical_bias="0.518" />
+
+    <ImageView
+        android:id="@+id/historyItemMarkImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_mark_in_circle_gray"
+        android:layout_marginRight="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/historyItemTranslateTextView"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/historyItemSourceTextView"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
 
 
 </android.support.constraint.ConstraintLayout>

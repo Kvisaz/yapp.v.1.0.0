@@ -3,7 +3,7 @@ package ru.kvisaz.yandextranslate.screens.history;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -11,6 +11,8 @@ import butterknife.ButterKnife;
 import ru.kvisaz.yandextranslate.R;
 
 public class HistoryViewHolder extends RecyclerView.ViewHolder {
+
+    View itemView;
 
     @BindView(R.id.historyItemBookmarkCheckBox)
     CheckBox bookmarkCheckBox;
@@ -27,9 +29,13 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.historyItemDirectionTextView)
     TextView directionTextView;
 
+    @BindView(R.id.historyItemMarkImageView)
+    ImageView markImageView;
+
 
     public HistoryViewHolder(View itemView) {
         super(itemView);
+        this.itemView = itemView;
         ButterKnife.bind(this, itemView);
     }
 }
