@@ -37,4 +37,7 @@ public interface ITranslatorView extends MvpView {
 
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showDictionaryArticle(DictArticle article);
+
+    @StateStrategyType(AddToEndSingleStrategy.class)
+    void cancelFavorite(boolean wasChecked);
 }

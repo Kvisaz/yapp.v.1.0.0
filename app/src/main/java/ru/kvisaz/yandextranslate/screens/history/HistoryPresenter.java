@@ -31,7 +31,7 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
                         (entities -> {
                             getViewState().showHistory(entities);
                         })
-                        , this::handleThrowable);
+                        , this::handleServerError);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
                         })
                         , throwable -> {
                             // todo тут надо отменить выделение кнопки - ведь не сохранилось
-                            handleThrowable(throwable);
+                            handleServerError(throwable);
                         }
                 );
     }
@@ -69,7 +69,7 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
 
     }
 
-    private void handleThrowable(Throwable throwable) {
+    private void handleServerError(Throwable throwable) {
         Log.d(Constants.LOG_TAG, throwable.getMessage());
     }
 }

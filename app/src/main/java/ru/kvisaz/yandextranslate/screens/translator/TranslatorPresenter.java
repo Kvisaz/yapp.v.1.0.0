@@ -17,6 +17,7 @@ import ru.kvisaz.yandextranslate.data.database.HistoryDbService;
 import ru.kvisaz.yandextranslate.data.models.DictArticle;
 import ru.kvisaz.yandextranslate.data.models.Language;
 import ru.kvisaz.yandextranslate.data.models.LanguagesInfo;
+import ru.kvisaz.yandextranslate.data.models.Translate;
 import ru.kvisaz.yandextranslate.data.rest.DictApi;
 import ru.kvisaz.yandextranslate.data.rest.DictRestService;
 import ru.kvisaz.yandextranslate.data.rest.TranslateRestService;
@@ -55,6 +56,8 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
     private String sourceText;
     private String translatedText;
     private DictArticle dictArticle;
+
+    private Translate mTranslate;
 
     private Runnable fetchTranslateRunnable;
 
@@ -164,6 +167,21 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
     @Override
     public void onMakeFavoriteCheck(Boolean checked) {
+        // нет перевода - нечего отмечать
+        if (mTranslate == null) {
+            getViewState().cancelFavorite(checked);
+            return;
+        }
+
+        mTranslate.setFavorite(checked);
+        historyDbService.save(mTranslate).subscribe(
+                (id -> {
+                    Log.d(Constants.LOG_TAG, mTranslate.getSource() + " bookmarked");
+                })
+                , (throwable -> {
+                    getViewState().cancelFavorite(checked);
+                    logTrowable(throwable);
+                }));
 
     }
 
@@ -194,13 +212,16 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
     private void fetchTranslate() {
         String from = selectedSource.code;
         String to = selectedDestination.code;
+        mTranslate = null;
 
         // todo select UI in settings
         translateRepository.fetchTranslate(sourceText, from, to, DictApi.LOOKUP_UI_DEFAULT_VALUE)
                 .subscribe(
                         (translate -> {
+                            mTranslate = translate;
                             translatedText = translate.getText();
                             dictArticle = translate.getDictArticle();
+                            // todo getViewState().showTranslate(mTranslate)
                             getViewState().showOriginalText(sourceText);
                             getViewState().showTranslatedText(translatedText);
                             getViewState().showDictionaryArticle(dictArticle);
@@ -209,15 +230,15 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
                             historyDbService.save(translate).subscribe(
                                     (id -> {
                                         Log.d(Constants.LOG_TAG, "Saved id = " + id);
-                                    }), this::handleServerError
+                                    }), this::logTrowable
                             );
                         }
                         ),
-                        this::handleServerError);
+                        this::logTrowable);
     }
 
 
-    private void handleServerError(Throwable throwable) {
+    private void logTrowable(Throwable throwable) {
         Log.d(Constants.LOG_TAG, throwable.getMessage());
     }
 

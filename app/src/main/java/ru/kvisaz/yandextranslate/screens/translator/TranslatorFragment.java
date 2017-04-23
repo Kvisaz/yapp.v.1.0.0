@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
 import butterknife.BindView;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
 import butterknife.OnTextChanged;
@@ -130,6 +132,11 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
     }
 
     @Override
+    public void cancelFavorite(boolean wasChecked) {
+        translateBookmarkCheckbox.setChecked(!wasChecked);
+    }
+
+    @Override
     public void goToStartActivity() {
         Intent intent = new Intent(getActivity(), StartActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -155,6 +162,11 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
     @OnTextChanged(R.id.inputEditText)
     public void onInputChange(Editable editable) {
         presenter.onInputChanged(editable.toString());
+    }
+
+    @OnCheckedChanged(R.id.translateBookmarkCheckbox)
+    public void onCheckedChange(boolean checked) {
+        presenter.onMakeFavoriteCheck(checked);
     }
 
     @OnItemSelected(R.id.sourceLangSpinner)
