@@ -49,6 +49,7 @@ public class HistoryFraqment extends CommonTabFragment implements IHistoryView, 
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initRecyclerView();
+        setupTabsListener();
     }
 
     @Override
@@ -78,4 +79,19 @@ public class HistoryFraqment extends CommonTabFragment implements IHistoryView, 
         historyRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
+    private void setupTabsListener() {
+        historyModeTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                HistoryTabMode mode = HistoryTabMode.values()[tab.getPosition()];
+                presenter.onHistoryModeSelect(mode);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {}
+        });
+    }
 }

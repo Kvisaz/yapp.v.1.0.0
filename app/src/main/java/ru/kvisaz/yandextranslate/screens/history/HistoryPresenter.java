@@ -5,11 +5,13 @@ import android.util.Log;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.data.database.HistoryDbService;
-import ru.kvisaz.yandextranslate.data.database.models.HistoryEntity;
 import ru.kvisaz.yandextranslate.data.models.Translate;
 import ru.kvisaz.yandextranslate.di.ComponentProvider;
 
@@ -26,7 +28,7 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
 
     @Override
     public void onPageVisible() {
-        historyDbService.fetchHistory()
+        historyDbService.fetchHistoryList(false)
                 .subscribe(
                         (entities -> {
                             getViewState().showHistory(entities);
@@ -50,12 +52,20 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
     }
 
     @Override
-    public void onHistorySelect() {
+    public void onHistoryModeSelect(HistoryTabMode mode) {
+        Observable<List<Translate>> historyObservable;
+        if (mode == HistoryTabMode.HISTORY) {
+            historyObservable = historyDbService.fetchHistoryList();
+        } else {
+            historyObservable = historyDbService.fetchFavorites();
+        }
 
-    }
+        historyObservable.subscribe(
+                (entities -> {
+                    getViewState().showHistory(entities);
+                })
+                , this::handleServerError);
 
-    @Override
-    public void onFavoritesSelect() {
 
     }
 

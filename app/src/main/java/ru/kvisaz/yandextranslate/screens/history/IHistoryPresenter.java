@@ -9,9 +9,7 @@ public interface IHistoryPresenter {
 
     void onFavoriteCheck(Translate translate);
 
-    void onHistorySelect();
-
-    void onFavoritesSelect();
+    void onHistoryModeSelect(HistoryTabMode mode);
 
     void onDeleteButtonClick();
 

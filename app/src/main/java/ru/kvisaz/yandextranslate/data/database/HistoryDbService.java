@@ -33,11 +33,20 @@ public class HistoryDbService extends RxService {
         }).compose(applySchedulers());
     }
 
+    public Observable<List<Translate>> fetchHistoryList(){
+        return fetchHistoryList(false);
+    }
 
-    public Observable<List<Translate>> fetchHistory() {
-        return Observable.fromCallable(() -> getEntityQuery()
-                .orderBy("_id desc")
-                .list())
+    public Observable<List<Translate>> fetchFavorites(){
+        return fetchHistoryList(true);
+    }
+
+    public Observable<List<Translate>> fetchHistoryList(boolean favoritesOnly) {
+
+        DatabaseCompartment.QueryBuilder<HistoryEntity> queryBuilder;
+        queryBuilder = favoritesOnly? getFavoritesQueryBuilder() : getHistoryQueryBuilder();
+
+        return Observable.fromCallable(() -> queryBuilder.list())
                 .map(entities -> {
                     List<Translate> translateList = new ArrayList<>();
                     for (HistoryEntity entity : entities) {
@@ -45,12 +54,6 @@ public class HistoryDbService extends RxService {
                     }
                     return translateList;
                 })
-                .compose(applySchedulers());
-    }
-
-    public Observable<List<HistoryEntity>> fetchFavorites() {
-        return Observable.fromCallable(() -> getEntityQuery()
-                .withSelection("isFavorite = TRUE").list())
                 .compose(applySchedulers());
     }
 
@@ -78,5 +81,13 @@ public class HistoryDbService extends RxService {
 
     private HistoryEntity getHistoryEntity(String sourceText) {
         return getEntityQuery().withSelection("source = ?", sourceText).get();
+    }
+
+    private DatabaseCompartment.QueryBuilder<HistoryEntity> getHistoryQueryBuilder() {
+        return getEntityQuery().orderBy("_id desc");
+    }
+
+    private DatabaseCompartment.QueryBuilder<HistoryEntity> getFavoritesQueryBuilder() {
+        return getHistoryQueryBuilder().withSelection("isFavorite = ?", "1");
     }
 }
