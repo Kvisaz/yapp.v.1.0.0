@@ -119,8 +119,10 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
         // Восстанавливаем перевод
         Translate activeTranslate = ActiveSession.getTranslate(); // выбранный в истории или закладках
-        if( activeTranslate != null){
+        if (activeTranslate != null && languagesInfo != null) {
             mTranslate = activeTranslate;
+            selectedSource = languagesInfo.getLanguage(mTranslate.getFrom());
+            selectedDestination = languagesInfo.getLanguage(mTranslate.getTo());
         }
         //
         if (mTranslate != null) {
@@ -148,11 +150,6 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
         if (destinationLanguage.equals(selectedDestination)) return;
         selectedDestination = destinationLanguage;
         fetchTranslateNow(); // отправляем запрос на перевод
-    }
-
-    private void fetchTranslateNow() {
-        handler.removeCallbacks(fetchTranslateRunnable); // отменяем запрос на отложенный перевод, если есть
-        fetchTranslate(); // Отправляем на новый перевод
     }
 
     @Override
@@ -244,7 +241,6 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
     }
 
-
     private void fetchTranslate() {
         String from = selectedSource.code;
         String to = selectedDestination.code;
@@ -270,6 +266,11 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
                         }
                         ),
                         this::logTrowable);
+    }
+
+    private void fetchTranslateNow() {
+        handler.removeCallbacks(fetchTranslateRunnable); // отменяем запрос на отложенный перевод, если есть
+        fetchTranslate(); // Отправляем на новый перевод
     }
 
 
