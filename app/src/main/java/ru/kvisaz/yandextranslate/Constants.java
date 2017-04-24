@@ -4,7 +4,7 @@ public class Constants {
 
     public static final long READ_TIMEOUT_SECONDS = 15;
     public static final long CONNECT_TIMEOUT_SECONDS = 15;
-    public static final String LOG_TAG = "KVISAZ";
+    public static final String LOG_TAG = "DEBUG_LOG";
 
     public static final char ALPHA_NON_TRANSPARENT = 255;
     public static final char ALPHA_HALF_TRANSPARENT = 128;

@@ -26,7 +26,7 @@ public class MyVocalizerListener implements VocalizerListener {
 
     @Override
     public void onPlayingBegin(Vocalizer vocalizer) {
-        owner.showLoadingIndicator(true);
+        owner.showLoadingIndicator(false);
         owner.showMessage(owner.getContext().getString(R.string.vocalizer_play_begin));
     }
 

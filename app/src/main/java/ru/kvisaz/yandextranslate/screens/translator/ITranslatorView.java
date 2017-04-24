@@ -43,4 +43,8 @@ public interface ITranslatorView extends MvpView {
 
     @StateStrategyType(SkipStrategy.class)
     void vocalize(String text, int vocalizerTag);
+
+    @StateStrategyType(SkipStrategy.class)
+    void voiceRecognize();
+
 }

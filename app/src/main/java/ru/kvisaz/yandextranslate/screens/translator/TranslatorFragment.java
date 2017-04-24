@@ -13,6 +13,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -33,8 +35,10 @@ import ru.kvisaz.yandextranslate.screens.start.StartActivity;
 import ru.kvisaz.yandextranslate.screens.translator.dict.DictArticleAdapter;
 import ru.kvisaz.yandextranslate.speech.IVocalizerListenerOwner;
 import ru.kvisaz.yandextranslate.speech.MyVocalizerListener;
+import ru.yandex.speechkit.Recognizer;
 import ru.yandex.speechkit.SpeechKit;
 import ru.yandex.speechkit.Vocalizer;
+import ru.yandex.speechkit.gui.RecognizerActivity;
 
 public class TranslatorFragment extends CommonTabFragment implements ITranslatorView, IVocalizerListenerOwner {
 
@@ -74,12 +78,33 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
     @BindView(R.id.offlineButton)
     Button offlineButton;
 
+    @BindView(R.id.sourceVoiceRecognizerButton)
+    ImageButton sourceVoiceRecognizerButton;
+
+    @BindView(R.id.sourceVocalizeButton)
+    ImageButton sourceVocalizeButton;
+
+    @BindView(R.id.translateVocalizeButton)
+    ImageButton translateVocalizeButton;
+
+    @BindView(R.id.sourceVoiceRecognizeProgressBar)
+    ProgressBar sourceVoiceRecognizeProgressBar;
+
+    @BindView(R.id.sourceVocalizeProgressBar)
+    ProgressBar sourceVocalizeProgressBar;
+
+    @BindView(R.id.translateVocalizeProgressBar)
+    ProgressBar translateVocalizeProgressBar;
+
     private ArrayAdapter<Language> sourcesSpinnerAdapter;
     private ArrayAdapter<Language> destLanguagesAdapter;
     private DictArticleAdapter dictArticleAdapter;
 
     private Vocalizer vocalizer;
     private MyVocalizerListener vocalizerListener;
+    private int vocalizerTag; // для пометки, на какой кнопке показывать индикатор ожидания и других полезных вещей
+
+    private final int VOICE_RECOGNIZER_REQUEST_CODE = 1231;
 
     @Override
     protected int getLayoutResource() {
@@ -162,6 +187,12 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
 
     @Override
     public void resetVocalizer() {
+        sourceVocalizeButton.setVisibility(View.VISIBLE);
+        translateVocalizeButton.setVisibility(View.VISIBLE);
+
+        sourceVocalizeProgressBar.setVisibility(View.GONE);
+        translateVocalizeProgressBar.setVisibility(View.GONE);
+
         if (vocalizer != null) {
             vocalizer.cancel();
         }
@@ -169,11 +200,55 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
     }
 
     @Override
-    public void vocalize(String text) {
+    public void showLoadingIndicator(boolean visible) {
+        int visibility = visible ? View.VISIBLE : View.GONE;
+        int buttonVisibilty = !visible ? View.VISIBLE : View.INVISIBLE;
+        switch (vocalizerTag) {
+            case TranslatorPresenter.SOURCE_VOCALIZER:
+                sourceVocalizeProgressBar.setVisibility(visibility);
+                sourceVocalizeButton.setVisibility(buttonVisibilty);
+                break;
+            case TranslatorPresenter.TRANSLATE_VOCALIZER:
+                translateVocalizeProgressBar.setVisibility(visibility);
+                translateVocalizeButton.setVisibility(buttonVisibilty);
+                break;
+        }
+    }
+
+    @Override
+    public void vocalize(String text, int vocalizerTag) {
+        this.vocalizerTag = vocalizerTag;
         resetVocalizer();
         vocalizer = Vocalizer.createVocalizer(Vocalizer.Language.RUSSIAN, text, true, Vocalizer.Voice.ALYSS);
         vocalizer.setListener(vocalizerListener);
         vocalizer.start();
+    }
+
+    @Override
+    public void voiceRecognize() {
+        // To start recognition create an Intent with required extras.
+        Intent intent = new Intent(getActivity(), RecognizerActivity.class);
+        // Specify the model for better results.
+        intent.putExtra(RecognizerActivity.EXTRA_MODEL, Recognizer.Model.QUERIES);
+        // Specify the language.
+        intent.putExtra(RecognizerActivity.EXTRA_LANGUAGE, Recognizer.Language.RUSSIAN);
+        // To get recognition results use startActivityForResult(),
+        // also don't forget to override onActivityResult().
+        startActivityForResult(intent, VOICE_RECOGNIZER_REQUEST_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == VOICE_RECOGNIZER_REQUEST_CODE) {
+            if (resultCode == RecognizerActivity.RESULT_OK && data != null) {
+                final String result = data.getStringExtra(RecognizerActivity.EXTRA_RESULT);
+                inputEditText.setText(result);
+            } else if (resultCode == RecognizerActivity.RESULT_ERROR) {
+                String errorMessage = ((ru.yandex.speechkit.Error) data.getSerializableExtra(RecognizerActivity.EXTRA_ERROR)).getString();
+                showMessage(errorMessage);
+            }
+        }
     }
 
     @OnClick(R.id.offlineButton)
@@ -215,14 +290,19 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
         presenter.onDestinationSelect(dest);
     }
 
-    @OnClick(R.id.translateVoicePlayButton)
+    @OnClick(R.id.sourceVoiceRecognizerButton)
+    public void onRecognizerButtonClick(){
+        presenter.onSourceVoiceInputButtonClick();
+    }
+
+    @OnClick(R.id.translateVocalizeButton)
     public void onTranslateVoicePlay() {
         presenter.onTranslateVocalizeButtonClick();
     }
 
-    @OnClick(R.id.inputVoicePlayButton)
-    public void onInputVoicePlay() {
-        presenter.onSourceVoiceInputButtonClick();
+    @OnClick(R.id.sourceVocalizeButton)
+    public void onInputVocalize() {
+        presenter.onSourceVocalizeButtonClick();
     }
 
     @NonNull

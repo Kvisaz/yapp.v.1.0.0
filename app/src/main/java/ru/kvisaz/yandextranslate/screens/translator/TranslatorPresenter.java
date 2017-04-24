@@ -62,6 +62,9 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
     private Runnable fetchTranslateRunnable;
 
+    public final static int SOURCE_VOCALIZER = 1221;
+    public final static int TRANSLATE_VOCALIZER = 1222;
+
 
      /*
         *   TODO 1 IndexOutOfBoundsException: Invalid index 1, size is 1  при чтении слова Печень
@@ -75,6 +78,9 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
      *   todo BUG - ландскейп выглядит убого, не видна словарная статья
      *
      *   todo BUG - заметная пауза между отправками запроса на переводчик и словарь
+     *
+     *   todo BUG - смена ориентации экрана перестала воспроизводить текущий результат
+     *
      * */
 
 
@@ -191,19 +197,19 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
     @Override
     public void onSourceVoiceInputButtonClick() {
-
+        getViewState().voiceRecognize();
     }
 
     @Override
     public void onSourceVocalizeButtonClick() {
         if(StringUtils.isEmptyString(sourceText)) return;
-        getViewState().vocalize(sourceText);
+        getViewState().vocalize(sourceText, SOURCE_VOCALIZER);
     }
 
     @Override
     public void onTranslateVocalizeButtonClick() {
         if(StringUtils.isEmptyString(translatedText)) return;
-        getViewState().vocalize(translatedText);
+        getViewState().vocalize(translatedText, TRANSLATE_VOCALIZER);
     }
 
     @Override
