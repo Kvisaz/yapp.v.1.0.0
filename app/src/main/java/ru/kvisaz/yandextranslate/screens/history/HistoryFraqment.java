@@ -22,6 +22,9 @@ import ru.kvisaz.yandextranslate.R;
 import ru.kvisaz.yandextranslate.common.CommonTabFragment;
 import ru.kvisaz.yandextranslate.common.utils.KeyboardUtils;
 import ru.kvisaz.yandextranslate.data.models.Translate;
+import ru.kvisaz.yandextranslate.screens.tabcontainer.ITabRouter;
+import ru.kvisaz.yandextranslate.screens.tabcontainer.TabActivity;
+import ru.kvisaz.yandextranslate.screens.tabcontainer.TabEnum;
 
 public class HistoryFraqment extends CommonTabFragment implements IHistoryView, HistoryAdapter.InteractionListener {
 
@@ -72,6 +75,17 @@ public class HistoryFraqment extends CommonTabFragment implements IHistoryView, 
     @Override
     public void onFavoriteCheck(Translate translate, HistoryAdapter.BookmarkCheckedCallback checkedCallback) {
         presenter.onFavoriteCheck(translate, checkedCallback);
+    }
+
+    @Override
+    public void onShortClick(Translate translate) {
+        presenter.onTranslateSelect(translate);
+    }
+
+    @Override
+    public void gotoTranslatePage() {
+        ITabRouter router = (ITabRouter) getActivity();
+        router.selectTab(TabEnum.TRANSLATOR);
     }
 
     @Override

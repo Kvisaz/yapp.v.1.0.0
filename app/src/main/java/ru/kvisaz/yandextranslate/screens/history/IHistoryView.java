@@ -17,4 +17,7 @@ public interface IHistoryView extends MvpView {
 
     @StateStrategyType(AddToEndSingleStrategy.class)
     void hideTranslate(List<Translate> translates);
+
+    @StateStrategyType(AddToEndSingleStrategy.class)
+    void gotoTranslatePage();
 }

@@ -68,16 +68,20 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
      /*
         *   TODO 1 IndexOutOfBoundsException: Invalid index 1, size is 1  при чтении слова Печень
-        *   TODO 2  Сохранение запроса в базу данных после получения в Репозитории
+        *   TODO 3 todo ЛАНДСКЕЙП!!!        *
+        *
         *   FIXED -----------------  при смене языка в списке - повторять текущий запрос если есть
         *   FIXED -----------------   Убрать клавиатуру при получении ответа и при переходе на соседний фрагмент
         *   FIXED -----------------   Сделать задержку ввода в поиске в истории
         *   todo Share && Copy to clipboard
         *   todo экран настроек
+        *   FIXED -----------------   клик в истории и фаворитах - показ в переводчике готового решения
         *
-        *   todo BUG - ландскейп выглядит убого, не видна словарная статья
+        *
         *
         *   todo BUG - заметная пауза между отправками запроса на переводчик и словарь
+        *
+        *   TODO 2 РЕФАКТОРИНГ Сохранение запроса в базу данных после получения в Репозитории
         *
     * */
 
@@ -100,8 +104,7 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
     }
 
     @Override
-
-    public void onViewCreated() {
+    public void onVisible() {
         // Если офлайн - показываем только офлайн экран
         getViewState().showOfflineScreen(!ActiveSession.isOnline());
         if (!ActiveSession.isOnline()) return;
@@ -114,7 +117,12 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
             getViewState().selectDestinationLanguage(selectedDestination);
         }
 
-        // Восстанавливаем перевод если есть
+        // Восстанавливаем перевод
+        Translate activeTranslate = ActiveSession.getTranslate(); // выбранный в истории или закладках
+        if( activeTranslate != null){
+            mTranslate = activeTranslate;
+        }
+        //
         if (mTranslate != null) {
             getViewState().showTranslate(mTranslate);
         }
@@ -249,6 +257,8 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
                             mTranslate = translate;
                             translatedText = translate.getText();
                             dictArticle = translate.getDictArticle();
+                            ActiveSession.setTranslate(mTranslate);
+
                             getViewState().showTranslate(mTranslate);
 
                             // todo to repo

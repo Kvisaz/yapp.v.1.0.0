@@ -1,6 +1,5 @@
 package ru.kvisaz.yandextranslate.screens.history;
 
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +28,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
 
     public interface InteractionListener {
         void onFavoriteCheck(Translate translate, BookmarkCheckedCallback checkedCallback);
+        void onShortClick(Translate translate);
     }
 
     public interface BookmarkCheckedCallback {
@@ -58,7 +58,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
     public void onBindViewHolder(HistoryViewHolder holder, int position) {
         Translate translate = mData.get(position);
 
-        //  delimiter
+        //  разделяем список однопиксельной линией через каждые N пунктов, как на скринах в дизайне
         holder.delimiterView.setVisibility(mustHaveDelimiter(position) ? View.VISIBLE : View.INVISIBLE);
 
         // check bookmark
@@ -79,10 +79,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
         // direction
         holder.directionTextView.setText(translate.getFrom() + DIRECTION_DELIMITER + translate.getTo());
 
-        // by default itemView is non-marked
+        // восстанавливае статус иконки выделения
         holder.setMarked(false);
 
-        // selection by long click
+        //  длинный клик по пункту - выделяем множество элементов в списке
         View itemView = holder.itemView;
         itemView.setOnLongClickListener(v -> {
             if (selectedItems.contains(translate)) {
@@ -93,6 +93,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
                 holder.setMarked(true);
             }
             return true;
+        });
+
+        //  короткий клик по пункту - выделяем текущий перевод в списке
+        itemView.setOnClickListener(v -> {
+            mInteractionListener.onShortClick(translate);
         });
 
     }

@@ -10,6 +10,8 @@ public interface IHistoryPresenter {
 
     void onFavoriteCheck(Translate translate, HistoryAdapter.BookmarkCheckedCallback checkedCallback);
 
+    void onTranslateSelect(Translate translate);
+
     void onHistoryModeSelect(HistoryTabMode mode);
 
     void onDeleteButtonClick(List<Translate> translatesForRemoving);

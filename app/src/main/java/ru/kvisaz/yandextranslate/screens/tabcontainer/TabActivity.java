@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 
@@ -13,7 +14,7 @@ import butterknife.ButterKnife;
 import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.R;
 
-public class TabActivity extends MvpAppCompatActivity {
+public class TabActivity extends AppCompatActivity implements ITabRouter {
 
     private final static int DEFAULT_SELECTED_PAGE = 0;
     private final static String CURRENT_PAGE_BUNDLE_TAG = "CurrentPage";
@@ -49,6 +50,11 @@ public class TabActivity extends MvpAppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         int currentPage = savedInstanceState.getInt(CURRENT_PAGE_BUNDLE_TAG);
         selectTab(currentPage);
+    }
+
+    @Override
+    public void selectTab(TabEnum tabEnum) {
+        selectTab(tabEnum.ordinal());
     }
 
     private void initTabs() {

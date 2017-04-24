@@ -13,9 +13,11 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.common.utils.StringUtils;
+import ru.kvisaz.yandextranslate.data.ActiveSession;
 import ru.kvisaz.yandextranslate.data.database.HistoryDbService;
 import ru.kvisaz.yandextranslate.data.models.Translate;
 import ru.kvisaz.yandextranslate.di.ComponentProvider;
+import ru.kvisaz.yandextranslate.screens.tabcontainer.TabActivity;
 
 @InjectViewState
 public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHistoryPresenter {
@@ -89,6 +91,12 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
         // (в течение некоторого времени не будет меняться текст)
         fetchSearchRunnable = this::fetchSearch;
         handler.postDelayed(fetchSearchRunnable, Constants.DELAY_SEARCH_DB_CHANGING_MS);
+    }
+
+    @Override
+    public void onTranslateSelect(Translate translate) {
+        ActiveSession.setTranslate(translate);
+        getViewState().gotoTranslatePage();
     }
 
     private void fetchSearch() {

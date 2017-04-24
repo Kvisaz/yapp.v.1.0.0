@@ -119,7 +119,6 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
         initDictArticleView();
         vocalizerListener = new MyVocalizerListener(this);
         SpeechKit.getInstance().configure(getContext(), ApiKeys.API_VOICE_KEY_VALUE);
-        presenter.onViewCreated();
     }
 
     @Override
@@ -130,9 +129,13 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
         offlineButton.setVisibility(visibility);
     }
 
+
     @Override
-    protected void onVisible() {
+    protected void onVisible() { // Когда фрагмент становится видимым
         KeyboardUtils.hideKeyboard(this); // просто убираем клавиатуру при переходах между фрагментами
+        if (presenter != null) {
+            presenter.onVisible();
+        }
     }
 
     @Override
@@ -195,6 +198,7 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
     @Override
     public void showTranslate(Translate translate) {
         KeyboardUtils.hideKeyboard(this);
+        inputEditText.setText(translate.getSource());
         showOriginalText(translate.getSource());
         showTranslatedText(translate.getText());
         showDictionaryArticle(translate.getDictArticle());
@@ -306,7 +310,7 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
     }
 
     @OnClick(R.id.sourceVoiceRecognizerButton)
-    public void onRecognizerButtonClick(){
+    public void onRecognizerButtonClick() {
         presenter.onSourceVoiceInputButtonClick();
     }
 
