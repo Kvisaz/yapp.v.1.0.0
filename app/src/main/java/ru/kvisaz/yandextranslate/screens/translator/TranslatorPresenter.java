@@ -79,14 +79,7 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
      *
      *   todo BUG - заметная пауза между отправками запроса на переводчик и словарь
      *
-     *   todo BUG - смена ориентации экрана перестала воспроизводить текущий результат
      *
-     *   todo BUG - смена языка в спиннерах никак не работает
-     *     - переключать языки
-     *     - надо отправлять текущий source
-     *
-     *   fix 1 -  setRetainInstance(true); // CommonTabFragment
-     *   -- EditText сохраняет, а вот данные не выводятся
      *
      *
      *

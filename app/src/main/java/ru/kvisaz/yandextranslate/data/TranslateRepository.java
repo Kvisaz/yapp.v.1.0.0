@@ -31,7 +31,7 @@ public class TranslateRepository extends RxService {
     *   2. как побочный эффект при получении - записываем в базу данных новый запрос
     * */
     public Observable<Translate> fetchTranslate(String source, String from, String to, String ui) {
-        Observable<HistoryEntity> historyEntityObservable = historyDbService.fetchSearchSame(source);
+        Observable<HistoryEntity> historyEntityObservable = historyDbService.fetchSearchSame(source, from, to);
 
         Observable<Translate> translateObservableAfterHistoryCheck = historyEntityObservable
                 .flatMap(historyEntity -> { // берем перевод из базы данных или с сервера

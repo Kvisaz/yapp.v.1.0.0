@@ -65,9 +65,9 @@ public class HistoryDbService extends RxService {
                 .compose(applySchedulers());
     }
 
-    public Observable<HistoryEntity> fetchSearchSame(String source) {
+    public Observable<HistoryEntity> fetchSearchSame(String source, String from, String to) {
         return Observable.fromCallable(() -> {
-            HistoryEntity historyEntity = getEntityQuery().withSelection("source = ?", source).get();
+            HistoryEntity historyEntity = getEntityQuery().withSelection("source = ? AND fromLang = ? AND toLang = ?", source, from, to).get();
             return historyEntity != null ? historyEntity : new HistoryEntity(); // Callable в Rx не может возвращать null, проверяем по _id
         }).compose(applySchedulers());
     }
