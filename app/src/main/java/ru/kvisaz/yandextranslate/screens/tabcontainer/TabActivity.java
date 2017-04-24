@@ -16,6 +16,8 @@ import ru.kvisaz.yandextranslate.R;
 public class TabActivity extends MvpAppCompatActivity {
 
     private final static int DEFAULT_SELECTED_PAGE = 0;
+    private final static String CURRENT_PAGE_BUNDLE_TAG = "CurrentPage";
+
 
     @BindView(R.id.mainViewPager)
     protected ViewPager viewPager;
@@ -34,6 +36,19 @@ public class TabActivity extends MvpAppCompatActivity {
         setupTabsListener();
         setupTabIcons();
         selectTab(DEFAULT_SELECTED_PAGE);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(CURRENT_PAGE_BUNDLE_TAG, viewPager.getCurrentItem());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        int currentPage = savedInstanceState.getInt(CURRENT_PAGE_BUNDLE_TAG);
+        selectTab(currentPage);
     }
 
     private void initTabs() {
