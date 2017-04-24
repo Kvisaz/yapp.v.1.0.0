@@ -42,5 +42,5 @@ public interface ITranslatorView extends MvpView {
     void cancelFavorite(boolean wasChecked);
 
     @StateStrategyType(SkipStrategy.class)
-    void vocalize(String text);
+    void vocalize(String text, int vocalizerTag);
 }
