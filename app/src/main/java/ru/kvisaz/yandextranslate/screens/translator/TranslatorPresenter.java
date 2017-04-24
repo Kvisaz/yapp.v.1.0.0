@@ -76,6 +76,9 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
         *   todo Share && Copy to clipboard
         *   todo экран настроек
         *   FIXED -----------------   клик в истории и фаворитах - показ в переводчике готового решения
+        *   FIXED -----------------   История не показывает переводы одного слова с разных языков
+        *   todo Если словарь не распознает регион - нет сохранения в базу,
+        *
         *
         *
         *

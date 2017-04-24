@@ -26,7 +26,7 @@ public class HistoryDbService extends RxService {
     public Observable<Long> save(Translate translate) {
         return Observable.fromCallable(() -> {
             HistoryEntity newEntity = new HistoryEntity(translate);
-            HistoryEntity saved = getHistoryEntity(translate.getSource());
+            HistoryEntity saved = getHistoryEntity(translate.getSource(), translate.getFrom(), translate.getTo());
             if (saved != null) {
                 newEntity._id = saved._id;
             }
@@ -67,7 +67,7 @@ public class HistoryDbService extends RxService {
 
     public Observable<HistoryEntity> fetchSearchSame(String source, String from, String to) {
         return Observable.fromCallable(() -> {
-            HistoryEntity historyEntity = getEntityQuery().withSelection("source = ? AND fromLang = ? AND toLang = ?", source, from, to).get();
+            HistoryEntity historyEntity = getHistoryEntity(source, from, to);
             return historyEntity != null ? historyEntity : new HistoryEntity(); // Callable в Rx не может возвращать null, проверяем по _id
         }).compose(applySchedulers());
     }
@@ -94,8 +94,8 @@ public class HistoryDbService extends RxService {
         return cupboard().withDatabase(database);
     }
 
-    private HistoryEntity getHistoryEntity(String sourceText) {
-        return getEntityQuery().withSelection("source = ?", sourceText).get();
+    private HistoryEntity getHistoryEntity(String source, String from, String to) {
+        return getEntityQuery().withSelection("source = ? AND fromLang = ? AND toLang = ?", source, from, to).get();
     }
 
     private DatabaseCompartment.QueryBuilder<HistoryEntity> getHistoryQueryBuilder() {
