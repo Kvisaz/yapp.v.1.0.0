@@ -63,11 +63,11 @@ public class DictArticle {
     private String getSynonims(DictTr translate) {
         if (translate == null) return StringUtils.EMPTY_STRING;
         StringBuilder sb = new StringBuilder();
-        sb.append(translate.text);
+        sb.append(StringUtils.getEmptyIfNull(translate.text));
 
         if (translate.syn != null) {
             for (DictSyn syn : translate.syn) {
-                sb.append(WORD_DELIMITER).append(syn.text);
+                sb.append(WORD_DELIMITER).append(StringUtils.getEmptyIfNull(syn.text));
             }
         }
 
@@ -88,7 +88,7 @@ public class DictArticle {
             if (isFirst) {
                 isFirst = false;
             }
-            sb.append(mean.text);
+            sb.append(StringUtils.getEmptyIfNull(mean.text));
         }
 
         return sb.toString();
