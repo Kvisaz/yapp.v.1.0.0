@@ -9,7 +9,7 @@ public class Constants {
     public static final char ALPHA_NON_TRANSPARENT = 255;
     public static final char ALPHA_HALF_TRANSPARENT = 128;
 
-    public static final long START_SCREEN_LOADING_MIN_TIME = 3;
+    public static final long START_SCREEN_LOADING_MIN_TIME = 1;
 
     public static final String DEFAULT_DIRECTION_DELIMITER = "-";
 

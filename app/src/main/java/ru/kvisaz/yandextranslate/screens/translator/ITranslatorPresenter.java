@@ -14,10 +14,6 @@ public interface ITranslatorPresenter {
 
     void onMakeFavoriteCheck(Boolean checked);
 
-    void onSourceSoundButtonClick();
-
-    void onDestinationSoundButtonClick();
-
     void onShareButtonClick();
 
     void onCopyButtonClick();
@@ -25,4 +21,11 @@ public interface ITranslatorPresenter {
     void onInputChanged(String input);
 
     void onOfflineButtonClick();
+
+    void onSourceVoiceInputButtonClick();
+
+    void onSourceVocalizeButtonClick();
+
+    void onTranslateVocalizeButtonClick();
+
 }

@@ -15,4 +15,10 @@
     <string name="history_search_hint">Найти в истории…</string>
     <string name="history_search_favorites_hint">Найти в закладках…</string>
 
+    <string name="vocalizer_synt_begin">Начинаю синтез</string>
+    <string name="vocalizer_synt_done">Синтез закончен</string>
+    <string name="vocalizer_play_begin">Начинаю воспроизведение</string>
+    <string name="vocalizer_play_done">Воспроизведение завершено</string>
+    <string name="vocalizer_error">Ошибка Vocalizer</string>
+
 </resources>

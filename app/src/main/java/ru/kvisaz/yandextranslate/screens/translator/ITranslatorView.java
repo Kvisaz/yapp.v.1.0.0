@@ -40,4 +40,7 @@ public interface ITranslatorView extends MvpView {
 
     @StateStrategyType(AddToEndSingleStrategy.class)
     void cancelFavorite(boolean wasChecked);
+
+    @StateStrategyType(SkipStrategy.class)
+    void vocalize(String text);
 }

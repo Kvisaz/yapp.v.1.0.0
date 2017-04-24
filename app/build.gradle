@@ -70,4 +70,6 @@ dependencies {
     compile "com.github.biodunalfet:SlidingSquaresLoader:1.0"
 
     compile 'nl.qbusict:cupboard:2.2.0'
+
+    compile 'com.yandex.android:speechkit:2.5.0'
 }

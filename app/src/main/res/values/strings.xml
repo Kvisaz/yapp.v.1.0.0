@@ -14,4 +14,10 @@
     <string name="history_search_hint">Find in history…</string>
     <string name="history_search_favorites_hint">Find in favorites…</string>
 
+    <string name="vocalizer_synt_begin">Synthesis begin</string>
+    <string name="vocalizer_synt_done">Synthesis done</string>
+    <string name="vocalizer_play_begin">Playing begin</string>
+    <string name="vocalizer_play_done">Playing done</string>
+    <string name="vocalizer_error">Vocalizer Error</string>
+
 </resources>

@@ -7,11 +7,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -23,14 +23,20 @@ import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
 import butterknife.OnTextChanged;
+import ru.kvisaz.yandextranslate.ApiKeys;
+import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.R;
 import ru.kvisaz.yandextranslate.common.CommonTabFragment;
 import ru.kvisaz.yandextranslate.data.models.DictArticle;
 import ru.kvisaz.yandextranslate.data.models.Language;
 import ru.kvisaz.yandextranslate.screens.start.StartActivity;
 import ru.kvisaz.yandextranslate.screens.translator.dict.DictArticleAdapter;
+import ru.kvisaz.yandextranslate.speech.IVocalizerListenerOwner;
+import ru.kvisaz.yandextranslate.speech.MyVocalizerListener;
+import ru.yandex.speechkit.SpeechKit;
+import ru.yandex.speechkit.Vocalizer;
 
-public class TranslatorFragment extends CommonTabFragment implements ITranslatorView {
+public class TranslatorFragment extends CommonTabFragment implements ITranslatorView, IVocalizerListenerOwner {
 
     @InjectPresenter
     TranslatorPresenter presenter;
@@ -72,6 +78,9 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
     private ArrayAdapter<Language> destLanguagesAdapter;
     private DictArticleAdapter dictArticleAdapter;
 
+    private Vocalizer vocalizer;
+    private MyVocalizerListener vocalizerListener;
+
     @Override
     protected int getLayoutResource() {
         return R.layout.fragment_translator;
@@ -81,6 +90,8 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initDictArticleView();
+        vocalizerListener = new MyVocalizerListener(this);
+        SpeechKit.getInstance().configure(getContext(), ApiKeys.API_VOICE_KEY_VALUE);
         presenter.onStart();
     }
 
@@ -144,6 +155,27 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
         getActivity().finish();
     }
 
+    @Override
+    public void showMessage(String message) {
+        Log.d(Constants.LOG_TAG, message);
+    }
+
+    @Override
+    public void resetVocalizer() {
+        if (vocalizer != null) {
+            vocalizer.cancel();
+        }
+        vocalizer = null;
+    }
+
+    @Override
+    public void vocalize(String text) {
+        resetVocalizer();
+        vocalizer = Vocalizer.createVocalizer(Vocalizer.Language.RUSSIAN, text, true, Vocalizer.Voice.ALYSS);
+        vocalizer.setListener(vocalizerListener);
+        vocalizer.start();
+    }
+
     @OnClick(R.id.offlineButton)
     public void onOfflineClick(View view) {
         presenter.onOfflineButtonClick();
@@ -181,6 +213,16 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
         if (destLanguagesAdapter == null) return;
         Language dest = destLanguagesAdapter.getItem(position);
         presenter.onDestinationSelect(dest);
+    }
+
+    @OnClick(R.id.translateVoicePlayButton)
+    public void onTranslateVoicePlay() {
+        presenter.onTranslateVocalizeButtonClick();
+    }
+
+    @OnClick(R.id.inputVoicePlayButton)
+    public void onInputVoicePlay() {
+        presenter.onSourceVoiceInputButtonClick();
     }
 
     @NonNull

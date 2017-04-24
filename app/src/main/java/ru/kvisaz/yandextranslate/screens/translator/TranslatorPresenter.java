@@ -73,6 +73,8 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
      /*
      *        *
      *   todo BUG - ландскейп выглядит убого, не видна словарная статья
+     *
+     *   todo BUG - заметная пауза между отправками запроса на переводчик и словарь
      * */
 
 
@@ -188,13 +190,20 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
     }
 
     @Override
-    public void onSourceSoundButtonClick() {
+    public void onSourceVoiceInputButtonClick() {
 
     }
 
     @Override
-    public void onDestinationSoundButtonClick() {
+    public void onSourceVocalizeButtonClick() {
+        if(StringUtils.isEmptyString(sourceText)) return;
+        getViewState().vocalize(sourceText);
+    }
 
+    @Override
+    public void onTranslateVocalizeButtonClick() {
+        if(StringUtils.isEmptyString(translatedText)) return;
+        getViewState().vocalize(translatedText);
     }
 
     @Override
@@ -206,6 +215,7 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
     public void onCopyButtonClick() {
 
     }
+
 
     private void fetchTranslate() {
         String from = selectedSource.code;
