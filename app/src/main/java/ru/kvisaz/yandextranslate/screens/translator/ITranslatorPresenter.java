@@ -4,7 +4,7 @@ import ru.kvisaz.yandextranslate.data.models.Language;
 
 public interface ITranslatorPresenter {
 
-    void onStart();
+    void onViewCreated();
 
     void onSourceSelect(Language sourceLanguage);
 

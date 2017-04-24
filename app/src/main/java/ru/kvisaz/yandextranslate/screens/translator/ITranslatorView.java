@@ -8,13 +8,13 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
 import ru.kvisaz.yandextranslate.data.models.DictArticle;
 import ru.kvisaz.yandextranslate.data.models.Language;
+import ru.kvisaz.yandextranslate.data.models.Translate;
 
 public interface ITranslatorView extends MvpView {
 
     @StateStrategyType(SingleStateStrategy.class)
     void showOfflineScreen(boolean visible);
 
-    @StateStrategyType(SkipStrategy.class)
     void goToStartActivity();
 
     @StateStrategyType(AddToEndSingleStrategy.class)
@@ -40,6 +40,9 @@ public interface ITranslatorView extends MvpView {
 
     @StateStrategyType(AddToEndSingleStrategy.class)
     void cancelFavorite(boolean wasChecked);
+
+    @StateStrategyType(AddToEndSingleStrategy.class)
+    void showTranslate(Translate translate);
 
     @StateStrategyType(SkipStrategy.class)
     void vocalize(String text, int vocalizerTag);

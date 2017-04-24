@@ -31,6 +31,7 @@ import ru.kvisaz.yandextranslate.R;
 import ru.kvisaz.yandextranslate.common.CommonTabFragment;
 import ru.kvisaz.yandextranslate.data.models.DictArticle;
 import ru.kvisaz.yandextranslate.data.models.Language;
+import ru.kvisaz.yandextranslate.data.models.Translate;
 import ru.kvisaz.yandextranslate.screens.start.StartActivity;
 import ru.kvisaz.yandextranslate.screens.translator.dict.DictArticleAdapter;
 import ru.kvisaz.yandextranslate.speech.IVocalizerListenerOwner;
@@ -117,7 +118,7 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
         initDictArticleView();
         vocalizerListener = new MyVocalizerListener(this);
         SpeechKit.getInstance().configure(getContext(), ApiKeys.API_VOICE_KEY_VALUE);
-        presenter.onStart();
+        presenter.onViewCreated();
     }
 
     @Override
@@ -183,6 +184,13 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
     @Override
     public void showMessage(String message) {
         Log.d(Constants.LOG_TAG, message);
+    }
+
+    @Override
+    public void showTranslate(Translate translate) {
+        showOriginalText(translate.getSource());
+        showTranslatedText(translate.getText());
+        showDictionaryArticle(translate.getDictArticle());
     }
 
     @Override

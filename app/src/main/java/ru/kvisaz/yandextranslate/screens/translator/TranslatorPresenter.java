@@ -81,6 +81,15 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
      *
      *   todo BUG - смена ориентации экрана перестала воспроизводить текущий результат
      *
+     *   todo BUG - смена языка в спиннерах никак не работает
+     *     - переключать языки
+     *     - надо отправлять текущий source
+     *
+     *   fix 1 -  setRetainInstance(true); // CommonTabFragment
+     *   -- EditText сохраняет, а вот данные не выводятся
+     *
+     *
+     *
      * */
 
 
@@ -103,16 +112,22 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
     @Override
 
-    public void onStart() {
+    public void onViewCreated() {
+        // Если офлайн - показываем только офлайн экран
         getViewState().showOfflineScreen(!ActiveSession.isOnline());
+        if (!ActiveSession.isOnline()) return;
 
-        if (ActiveSession.isOnline()) {
-            getViewState().setSourceLanguages(sourceLangs);
-            getViewState().selectSourceLanguage(selectedSource);
-            getViewState().setDestinationLanguages(destLangs);
-            if (selectedDestination != null) {
-                getViewState().selectDestinationLanguage(selectedDestination);
-            }
+        // Восстанавливаем вью
+        getViewState().setSourceLanguages(sourceLangs);
+        getViewState().selectSourceLanguage(selectedSource);
+        getViewState().setDestinationLanguages(destLangs);
+        if (selectedDestination != null) {
+            getViewState().selectDestinationLanguage(selectedDestination);
+        }
+
+        // Восстанавливаем перевод если есть
+        if (mTranslate != null) {
+            getViewState().showTranslate(mTranslate);
         }
     }
 
@@ -202,13 +217,13 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
     @Override
     public void onSourceVocalizeButtonClick() {
-        if(StringUtils.isEmptyString(sourceText)) return;
+        if (StringUtils.isEmptyString(sourceText)) return;
         getViewState().vocalize(sourceText, SOURCE_VOCALIZER);
     }
 
     @Override
     public void onTranslateVocalizeButtonClick() {
-        if(StringUtils.isEmptyString(translatedText)) return;
+        if (StringUtils.isEmptyString(translatedText)) return;
         getViewState().vocalize(translatedText, TRANSLATE_VOCALIZER);
     }
 
@@ -235,10 +250,7 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
                             mTranslate = translate;
                             translatedText = translate.getText();
                             dictArticle = translate.getDictArticle();
-                            // todo getViewState().showTranslate(mTranslate)
-                            getViewState().showOriginalText(sourceText);
-                            getViewState().showTranslatedText(translatedText);
-                            getViewState().showDictionaryArticle(dictArticle);
+                            getViewState().showTranslate(mTranslate);
 
                             // todo to repo
                             historyDbService.save(translate).subscribe(
