@@ -69,7 +69,11 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
      /*
         *   TODO 1 IndexOutOfBoundsException: Invalid index 1, size is 1  при чтении слова Печень
         *   TODO 2  Сохранение запроса в базу данных после получения в Репозитории
-        *   TODO 3  при смене языка в списке - повторять текущий запрос если есть
+        *   FIXED -----------------  при смене языка в списке - повторять текущий запрос если есть
+        *   FIXED -----------------   Убрать клавиатуру при получении ответа и при переходе на соседний фрагмент
+        *   FIXED -----------------   Сделать задержку ввода в поиске в истории
+        *   todo Share && Copy to clipboard
+        *   todo экран настроек
         *
     * */
 
@@ -126,7 +130,7 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
     @Override
     public void onSourceSelect(Language sourceLanguage) {
-        if (sourceLanguage.equals(selectedSource)) return; // stop call when select source
+        if (sourceLanguage.equals(selectedSource)) return;
 
         Language tempSelectedSource = selectedSource;
         selectedSource = sourceLanguage;
@@ -135,13 +139,20 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
         getViewState().setDestinationLanguages(destLangs);
         getViewState().selectDestinationLanguage(selectedDestination);
+
+        fetchTranslateNow(); // отправляем запрос на перевод
     }
 
     @Override
     public void onDestinationSelect(Language destinationLanguage) {
-        if (destinationLanguage.equals(selectedDestination))
-            return; // stop call when select destination
+        if (destinationLanguage.equals(selectedDestination)) return;
         selectedDestination = destinationLanguage;
+        fetchTranslateNow(); // отправляем запрос на перевод
+    }
+
+    private void fetchTranslateNow() {
+        handler.removeCallbacks(fetchTranslateRunnable); // отменяем запрос на отложенный перевод, если есть
+        fetchTranslate(); // Отправляем на новый перевод
     }
 
     @Override
@@ -150,11 +161,14 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
         selectedSource = selectedDestination;
         selectedDestination = tempSelectedSource;
 
+        // выбираем доступные пары языков для исходного языка
         destLangs = languagesInfo.getDestinations(selectedSource.code);
 
         getViewState().selectSourceLanguage(selectedSource);
         getViewState().setDestinationLanguages(destLangs);
         getViewState().selectDestinationLanguage(selectedDestination);
+
+        fetchTranslateNow(); // отправляем запрос на перевод
     }
 
     @Override

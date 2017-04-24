@@ -20,6 +20,7 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import ru.kvisaz.yandextranslate.R;
 import ru.kvisaz.yandextranslate.common.CommonTabFragment;
+import ru.kvisaz.yandextranslate.common.utils.KeyboardUtils;
 import ru.kvisaz.yandextranslate.data.models.Translate;
 
 public class HistoryFraqment extends CommonTabFragment implements IHistoryView, HistoryAdapter.InteractionListener {
@@ -58,11 +59,13 @@ public class HistoryFraqment extends CommonTabFragment implements IHistoryView, 
 
     @Override
     protected void onVisible() {
+        KeyboardUtils.hideKeyboard(this); // просто убираем клавиатуру при переходах между фрагментами
         presenter.onPageVisible();
     }
 
     @Override
     public void showHistory(List<Translate> translates) {
+        KeyboardUtils.hideKeyboard(this);
         historyAdapter.setData(translates);
     }
 

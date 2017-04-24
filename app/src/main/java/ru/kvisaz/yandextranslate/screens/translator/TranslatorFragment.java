@@ -29,6 +29,7 @@ import ru.kvisaz.yandextranslate.ApiKeys;
 import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.R;
 import ru.kvisaz.yandextranslate.common.CommonTabFragment;
+import ru.kvisaz.yandextranslate.common.utils.KeyboardUtils;
 import ru.kvisaz.yandextranslate.data.models.DictArticle;
 import ru.kvisaz.yandextranslate.data.models.Language;
 import ru.kvisaz.yandextranslate.data.models.Translate;
@@ -130,6 +131,11 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
     }
 
     @Override
+    protected void onVisible() {
+        KeyboardUtils.hideKeyboard(this); // просто убираем клавиатуру при переходах между фрагментами
+    }
+
+    @Override
     public void setSourceLanguages(Language[] languages) {
         sourcesSpinnerAdapter = createLanguagesAdapter(languages);
         sourceLangSpinner.setAdapter(sourcesSpinnerAdapter);
@@ -188,6 +194,7 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
 
     @Override
     public void showTranslate(Translate translate) {
+        KeyboardUtils.hideKeyboard(this);
         showOriginalText(translate.getSource());
         showTranslatedText(translate.getText());
         showDictionaryArticle(translate.getDictArticle());
