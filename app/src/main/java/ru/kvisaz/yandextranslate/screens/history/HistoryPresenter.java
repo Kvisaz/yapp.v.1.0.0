@@ -41,19 +41,22 @@ public class HistoryPresenter extends MvpPresenter<IHistoryView> implements IHis
     }
 
     @Override
-    public void onFavoriteCheck(Translate translate) {
+    public void onFavoriteCheck(Translate translate, HistoryAdapter.BookmarkCheckedCallback checkedCallback) {
         // just update
         historyDbService.save(translate)
                 .subscribe(
                         (id -> {
+                            // убираем из списка фаворитов если в режиме фаворитов
                             if (historyMode == HistoryTabMode.FAVORITES && !translate.isFavorite()) {
                                 getViewState().hideTranslate(translate);
                             }
-                            Log.d(Constants.LOG_TAG, "translated for " + translate.getSource() + " favorite = " + translate.isFavorite());
+
                         })
                         , throwable -> {
-                            // todo тут надо отменить выделение кнопки - ведь не сохранилось
+                            // отменяем выделение кнопки - ведь не сохранилось
+                            checkedCallback.setBookmarkChecked(false);
                             handleServerError(throwable);
+
                         }
                 );
     }

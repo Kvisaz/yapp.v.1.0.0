@@ -12,7 +12,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.kvisaz.yandextranslate.R;
 
-public class HistoryViewHolder extends RecyclerView.ViewHolder {
+public class HistoryViewHolder extends RecyclerView.ViewHolder implements HistoryAdapter.BookmarkCheckedCallback {
 
     View itemView;
 
@@ -46,5 +46,10 @@ public class HistoryViewHolder extends RecyclerView.ViewHolder {
         directionTextView.setVisibility(marked ? View.GONE : View.VISIBLE);
         @ColorRes int bgColorResId = marked ? R.color.colorLightLightGray : R.color.colorTransparent;
         itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), bgColorResId));
+    }
+
+    @Override
+    public void setBookmarkChecked(boolean checked) {
+        bookmarkCheckBox.setChecked(checked);
     }
 }

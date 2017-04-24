@@ -8,7 +8,7 @@ public interface IHistoryPresenter {
 
     void onPageVisible();
 
-    void onFavoriteCheck(Translate translate);
+    void onFavoriteCheck(Translate translate, HistoryAdapter.BookmarkCheckedCallback checkedCallback);
 
     void onHistoryModeSelect(HistoryTabMode mode);
 

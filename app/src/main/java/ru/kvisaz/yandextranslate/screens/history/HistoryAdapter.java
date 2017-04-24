@@ -28,7 +28,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
     private InteractionListener mInteractionListener;
 
     public interface InteractionListener {
-        void onFavoriteCheck(Translate translate);
+        void onFavoriteCheck(Translate translate, BookmarkCheckedCallback checkedCallback);
+    }
+
+    public interface BookmarkCheckedCallback {
+        void setBookmarkChecked(boolean checked);
     }
 
     public void setData(List<Translate> data) {
@@ -62,7 +66,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryViewHolder> {
         holder.bookmarkCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (buttonView.isPressed()) { // проверяем, что это пользователь
                 translate.setFavorite(isChecked);
-                mInteractionListener.onFavoriteCheck(translate);
+                mInteractionListener.onFavoriteCheck(translate, holder);
             }
         });
 

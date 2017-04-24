@@ -75,19 +75,11 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
         *   todo Share && Copy to clipboard
         *   todo экран настроек
         *
+        *   todo BUG - ландскейп выглядит убого, не видна словарная статья
+        *
+        *   todo BUG - заметная пауза между отправками запроса на переводчик и словарь
+        *
     * */
-
-     /*
-     *        *
-     *   todo BUG - ландскейп выглядит убого, не видна словарная статья
-     *
-     *   todo BUG - заметная пауза между отправками запроса на переводчик и словарь
-     *
-     *
-     *
-     *
-     *
-     * */
 
 
     public TranslatorPresenter() {

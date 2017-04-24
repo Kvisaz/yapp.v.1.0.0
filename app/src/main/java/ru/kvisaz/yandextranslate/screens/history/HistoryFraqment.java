@@ -70,8 +70,8 @@ public class HistoryFraqment extends CommonTabFragment implements IHistoryView, 
     }
 
     @Override
-    public void onFavoriteCheck(Translate translate) {
-        presenter.onFavoriteCheck(translate);
+    public void onFavoriteCheck(Translate translate, HistoryAdapter.BookmarkCheckedCallback checkedCallback) {
+        presenter.onFavoriteCheck(translate, checkedCallback);
     }
 
     @Override
