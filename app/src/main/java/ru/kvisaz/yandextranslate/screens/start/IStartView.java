@@ -12,6 +12,5 @@ interface IStartView extends MvpView {
     @StateStrategyType(SingleStateStrategy.class)
     void showOfflineScreen();
 
-    @StateStrategyType(SkipStrategy.class)
     void goToTabActivityScreen();
 }
