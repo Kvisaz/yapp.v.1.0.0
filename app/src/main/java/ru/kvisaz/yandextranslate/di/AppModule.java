@@ -2,7 +2,6 @@ package ru.kvisaz.yandextranslate.di;
 
 import android.content.Context;
 import android.os.Handler;
-import android.os.LocaleList;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 

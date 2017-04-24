@@ -1,6 +1,5 @@
 package ru.kvisaz.yandextranslate.data.database.models;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -32,7 +31,7 @@ public class HistoryEntity {
         meanStringsEncoded = "";
     }
 
-    public HistoryEntity(Translate translate){
+    public HistoryEntity(Translate translate) {
         isFavorite = translate.isFavorite();
         fromLang = translate.getFrom();
         toLang = translate.getTo();
@@ -74,11 +73,13 @@ public class HistoryEntity {
     }
 
     public List<String> getSynonims() {
-        return Arrays.asList(synonimStringsEncoded.split(DbConstants.DEFAULT_DELIMITER));
+        List<String> strings = StringUtils.convertStringToList(synonimStringsEncoded, DbConstants.DEFAULT_DELIMITER);
+        return strings;
     }
 
     public List<String> getMeans() {
-        return Arrays.asList(meanStringsEncoded.split(DbConstants.DEFAULT_DELIMITER));
+        List<String> strings = StringUtils.convertStringToList(meanStringsEncoded, DbConstants.DEFAULT_DELIMITER);
+        return strings;
     }
 
     public void setSynonims(List<String> syns) {

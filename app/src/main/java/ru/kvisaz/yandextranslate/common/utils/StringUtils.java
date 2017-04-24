@@ -1,5 +1,7 @@
 package ru.kvisaz.yandextranslate.common.utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class StringUtils {
@@ -12,11 +14,21 @@ public class StringUtils {
 
     public static String joinToString(List<String> strings, String delimiter) {
         StringBuilder sb = new StringBuilder();
-        for (String s : strings) {
-            sb.append(s).append(delimiter);
+        final int size = strings.size();
+        final int maxN = size - 1;
+        for (int i = 0; i < size; i++) {
+            sb.append(strings.get(i));
+            if (i < maxN) {
+                sb.append(delimiter);
+            }
         }
-        sb.delete(sb.length() - delimiter.length(), sb.length());
         return sb.toString();
+    }
+
+    public static List<String> convertStringToList(String string, String delimiter) {
+        String[] stringArr = string.split(delimiter, -1); // -1 Чтобы пустые строки тоже восстанавливались
+        List<String> stringList = Arrays.asList(stringArr);
+        return stringList;
     }
 
     /*

@@ -119,6 +119,7 @@ public class TranslatorFragment extends CommonTabFragment implements ITranslator
         initDictArticleView();
         vocalizerListener = new MyVocalizerListener(this);
         SpeechKit.getInstance().configure(getContext(), ApiKeys.API_VOICE_KEY_VALUE);
+        presenter.onVisible(); // для первого запуска
     }
 
     @Override

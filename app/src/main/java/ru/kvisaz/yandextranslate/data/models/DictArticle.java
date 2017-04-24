@@ -30,7 +30,14 @@ public class DictArticle {
     }
 
     public DictArticle(DictResponse dictResponse) {
-        isEmpty = dictResponse.def.size() == 0;
+        isEmpty = dictResponse.def == null || dictResponse.def.size() == 0;
+        /*
+        *     Может ли быть у нас пустой ответ словаря в правильном запросе?
+        *     Да, если направление в переводчике есть, а в словаре - нет.
+        *     Пример Русский -> Норвежский
+        *     Поэтому нужно вернуть пустую статью
+        *
+        * */
         if (isEmpty) {
             text = StringUtils.EMPTY_STRING;
             type = StringUtils.EMPTY_STRING;

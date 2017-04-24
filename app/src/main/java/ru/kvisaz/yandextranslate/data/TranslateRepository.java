@@ -1,6 +1,9 @@
 package ru.kvisaz.yandextranslate.data;
 
+import android.util.Log;
+
 import io.reactivex.Observable;
+import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.common.RxService;
 import ru.kvisaz.yandextranslate.data.database.HistoryDbService;
 import ru.kvisaz.yandextranslate.data.database.models.HistoryEntity;
@@ -36,8 +39,13 @@ public class TranslateRepository extends RxService {
         Observable<Translate> translateObservableAfterHistoryCheck = historyEntityObservable
                 .flatMap(historyEntity -> { // берем перевод из базы данных или с сервера
                     if (historyEntity._id != null) {
+                        // todo delete
+                        Log.d(Constants.LOG_TAG, "read historyEntity id = " + historyEntity._id);
+
                         return Observable.defer(() -> Observable.just(new Translate(historyEntity)));
                     } else {
+                        // todo delete
+                        Log.d(Constants.LOG_TAG, "getTranslateDictObservable");
                         return getTranslateDictObservable(source, from, to, ui);
                     }
                 });
@@ -55,8 +63,12 @@ public class TranslateRepository extends RxService {
                                                              String to,
                                                              String ui) {
 
-        Observable<TranslateResponse> translateResponseObservable = translateRestService.fetchTranslate(source, from, to);
-        Observable<DictResponse> dictResponseObservable = dictRestService.fetchDefinition(source, from, to, ui);
+        Observable<DictResponse> dictResponseObservable = dictRestService
+                .fetchDefinition(source, from, to, ui)
+                .onErrorReturn(throwable -> new DictResponse()); // Словарный запрос - обслуживающий, поэтому в случае ошибки предоставляем пользователю пустую словарную статью, чтобы выполнить основную функцию - перевод
+
+        Observable<TranslateResponse> translateResponseObservable = translateRestService
+                .fetchTranslate(source, from, to);
 
         return Observable.zip(translateResponseObservable, dictResponseObservable, (translateResponse, dictResponse) -> {
             Translate translate = new Translate();
@@ -65,7 +77,25 @@ public class TranslateRepository extends RxService {
             translate.setFrom(from);
             translate.setTo(to);
             translate.setDictArticle(new DictArticle(dictResponse));
+            saveOnlyNewTranslate(translate);
             return translate;
         });
+    }
+
+    private void saveOnlyNewTranslate(Translate translate) {
+        if (translate.isNew) {
+            // отправляем на запись в базу, если перевод новый
+            historyDbService.save(translate).subscribe(
+                    id -> {
+                        // todo delete
+                        Log.d(Constants.LOG_TAG, "historyDbService.save success, id- " + id);
+                    },
+                    throwable -> {
+                        // todo delete
+                        Log.d(Constants.LOG_TAG, "historyDbService.save error - " + throwable.getMessage());
+
+                    }
+            );
+        }
     }
 }

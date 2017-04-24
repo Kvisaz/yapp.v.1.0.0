@@ -2,6 +2,7 @@ package ru.kvisaz.yandextranslate.data.database;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Locale;
 
 import io.reactivex.Observable;
 import nl.qbusict.cupboard.DatabaseCompartment;
+import ru.kvisaz.yandextranslate.Constants;
 import ru.kvisaz.yandextranslate.common.RxService;
 import ru.kvisaz.yandextranslate.data.database.models.HistoryEntity;
 import ru.kvisaz.yandextranslate.data.models.Translate;
@@ -24,7 +26,11 @@ public class HistoryDbService extends RxService {
     }
 
     public Observable<Long> save(Translate translate) {
+        // todo delete
+        Log.d(Constants.LOG_TAG, "save translate " + translate.getSource());
         return Observable.fromCallable(() -> {
+            // todo delete
+            Log.d(Constants.LOG_TAG, "fromCallable save translate " + translate.getSource());
             HistoryEntity newEntity = new HistoryEntity(translate);
             HistoryEntity saved = getHistoryEntity(translate.getSource(), translate.getFrom(), translate.getTo());
             if (saved != null) {

@@ -67,24 +67,20 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
 
 
      /*
-        *   TODO 1 IndexOutOfBoundsException: Invalid index 1, size is 1  при чтении слова Печень
-        *   TODO 3 todo ЛАНДСКЕЙП!!!        *
-        *
+        *   FIXED -----------------   IndexOutOfBoundsException: Invalid index 1, size is 1  при чтении слова Печень
+        *   FIXED -----------------   ЛАНДСКЕЙП        *
         *   FIXED -----------------  при смене языка в списке - повторять текущий запрос если есть
         *   FIXED -----------------   Убрать клавиатуру при получении ответа и при переходе на соседний фрагмент
         *   FIXED -----------------   Сделать задержку ввода в поиске в истории
-        *   todo Share && Copy to clipboard
-        *   todo экран настроек
         *   FIXED -----------------   клик в истории и фаворитах - показ в переводчике готового решения
         *   FIXED -----------------   История не показывает переводы одного слова с разных языков
-        *   todo Если словарь не распознает регион - нет сохранения в базу,
+        *   FIXED -----------------   Если словарь не распознает регион - нет сохранения в базу,
         *
-        *
-        *
-        *
+        *   todo Share && Copy to clipboard
+        *   todo экран настроек
         *   todo BUG - заметная пауза между отправками запроса на переводчик и словарь
         *
-        *   TODO 2 РЕФАКТОРИНГ Сохранение запроса в базу данных после получения в Репозитории
+        *   FIXED -----------------    РЕФАКТОРИНГ Сохранение запроса в базу данных после получения в Репозитории
         *
     * */
 
@@ -126,6 +122,8 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
             mTranslate = activeTranslate;
             selectedSource = languagesInfo.getLanguage(mTranslate.getFrom());
             selectedDestination = languagesInfo.getLanguage(mTranslate.getTo());
+            getViewState().selectSourceLanguage(selectedSource);
+            getViewState().selectDestinationLanguage(selectedDestination);
         }
         //
         if (mTranslate != null) {
@@ -257,15 +255,7 @@ public class TranslatorPresenter extends MvpPresenter<ITranslatorView> implement
                             translatedText = translate.getText();
                             dictArticle = translate.getDictArticle();
                             ActiveSession.setTranslate(mTranslate);
-
                             getViewState().showTranslate(mTranslate);
-
-                            // todo to repo
-                            historyDbService.save(translate).subscribe(
-                                    (id -> {
-                                        Log.d(Constants.LOG_TAG, "Saved id = " + id);
-                                    }), this::logTrowable
-                            );
                         }
                         ),
                         this::logTrowable);
